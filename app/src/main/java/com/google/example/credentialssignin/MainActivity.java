@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //setContentView(R.layout.home_page);
+
 
         if (savedInstanceState != null) {
             mIsResolving = savedInstanceState.getBoolean(KEY_IS_RESOLVING, false);
@@ -83,6 +85,14 @@ public class MainActivity extends AppCompatActivity implements
         findViewById(R.id.button_google_revoke).setOnClickListener(this);
         findViewById(R.id.button_google_sign_out).setOnClickListener(this);
         findViewById(R.id.button_email_save).setOnClickListener(this);
+        findViewById(R.id.homePage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,HomePage.class );
+
+                startActivity(intent);
+            }
+        });
     }
 
     private void buildClients(String accountName) {
