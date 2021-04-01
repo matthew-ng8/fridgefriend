@@ -6,6 +6,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
+//import androidx.appcompat.app.AppCompatActivity;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
@@ -48,7 +50,7 @@ public class HomePage extends AppCompatActivity {
      *
      */
     private void createQRCode(){
-        AlertDialog dialog;
+        final AlertDialog dialog;
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         Bitmap bitmap;
         String friendCode = "QWERTY";
@@ -56,6 +58,7 @@ public class HomePage extends AppCompatActivity {
         final View friendCodePopView = getLayoutInflater().inflate(R.layout.friend_group_code, null);
         ImageView qrView = friendCodePopView.findViewById(R.id.qrView);
         TextView qrText = friendCodePopView.findViewById(R.id.qrCode);
+        Button qrClose = (Button)friendCodePopView.findViewById(R.id.qrClose);
         WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
         Point point = new Point();
@@ -76,6 +79,12 @@ public class HomePage extends AppCompatActivity {
 
         dialogBuilder.setView(friendCodePopView);
         dialog = dialogBuilder.create();
+        qrClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
         dialog.show();
         Log.d("HomePage", "End of button press");
 
