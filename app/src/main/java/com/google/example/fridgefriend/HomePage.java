@@ -1,14 +1,11 @@
-package com.google.example.credentialssignin;
+package com.google.example.fridgefriend;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
-//import androidx.appcompat.app.AppCompatActivity;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -17,12 +14,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.zxing.WriterException;
+import androidx.appcompat.app.AppCompatActivity;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
-
-import org.w3c.dom.Text;
 
 public class HomePage extends AppCompatActivity {
 
