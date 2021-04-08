@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.google.example.fridgefriend" >
 
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-permission
         android:name="android.permission.GET_ACCOUNTS"
         android:maxSdkVersion="22" />
@@ -29,6 +31,9 @@
         </activity>
 
         <activity android:name="com.google.example.fridgefriend.HomePage" >
+        </activity>
+
+        <activity android:name=".CameraView" >
         </activity>
     </application>
 
