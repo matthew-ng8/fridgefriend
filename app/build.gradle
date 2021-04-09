@@ -33,4 +33,7 @@ dependencies {
     implementation 'com.google.zxing:core:3.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+
+    //added for barcode googlevisions
+    implementation 'com.google.android.gms:play-services-vision:20.1.3'
 }
