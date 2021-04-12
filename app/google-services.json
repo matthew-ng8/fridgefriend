@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "30511774999",
+    "firebase_url": "https://fridgefriend-fde4d-default-rtdb.firebaseio.com",
+    "project_id": "fridgefriend-fde4d",
+    "storage_bucket": "fridgefriend-fde4d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:30511774999:android:e02c6eb81c12e011214b52",
+        "android_client_info": {
+          "package_name": "com.google.example.fridgefriend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "30511774999-i3b7t1k2nbm8h2s6uiknh6fimihc4sug.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.google.example.fridgefriend",
+            "certificate_hash": "166212240999830b397511b281f91646571a8fc6"
+          }
+        },
+        {
+          "client_id": "30511774999-hfpvoqdr5bm065fc1kn2kkgfedhhe1t6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7RJg4hJ0-R3WWsW18FNqlgmtd-V4CYIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "30511774999-hfpvoqdr5bm065fc1kn2kkgfedhhe1t6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
