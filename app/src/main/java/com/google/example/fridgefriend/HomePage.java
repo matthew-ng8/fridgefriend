@@ -2,6 +2,7 @@ package com.google.example.fridgefriend;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -14,12 +15,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.vision.barcode.Barcode;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
 public class HomePage extends AppCompatActivity {
+
+    private static final int BARCODE_REQUEST = 10;
+    private TextView text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +34,8 @@ public class HomePage extends AppCompatActivity {
         setContentView(R.layout.home_page);
 
         Button showQr = (Button)findViewById(R.id.qrButton);
-        TextView text = (TextView)findViewById(R.id.textView2);
+        Button scanCode = (Button)findViewById(R.id.qrScan);
+        text = (TextView)findViewById(R.id.textView2);
 
         text.setText("HOME PAGE");
         final Context homePageContext = getApplicationContext();
@@ -36,6 +44,12 @@ public class HomePage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 createQRCode();
+            }
+        });
+        scanCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scanQRCode();
             }
         });
 
@@ -88,4 +102,24 @@ public class HomePage extends AppCompatActivity {
 
     }
 
+
+    private void scanQRCode(){
+
+            Intent intent = new Intent(HomePage.this,CameraView.class );
+
+            startActivityForResult(intent, BARCODE_REQUEST);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == BARCODE_REQUEST && resultCode == RESULT_OK){
+            Barcode barcode = data.getParcelableExtra("barcodeTag");
+            text.setText(barcode.displayValue);
+            Log.d("Testing stuff", barcode.displayValue);
+        }
+
+    }
 }
