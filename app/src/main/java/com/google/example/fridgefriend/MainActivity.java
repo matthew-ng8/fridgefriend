@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.homePage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,HomePage.class);
-
+                //Intent intent = new Intent(MainActivity.this,HomePage.class);
+                Intent intent = new Intent(MainActivity.this,navigation.class);
                 startActivity(intent);
             }
         });
