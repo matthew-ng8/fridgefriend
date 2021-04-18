@@ -6,6 +6,7 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,6 +46,8 @@ import java.util.Collections;
 import java.util.List;
 
 
+
+
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -79,9 +82,23 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        this.signIn();
         updateUI(currentUser);
     }
 
+    public void configureSignIn(){
+// Configure sign-in to request the user’s basic profile like name and email
+        GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+// Build a GoogleApiClient with access to GoogleSignIn.API and the options above.
+
+        //mGoogleApiClient = new GoogleApi<>();
+         //       .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+         //       .addApi(Auth.GOOGLE_SIGN_IN_API, options)
+         //       .build();
+
+    }
 
     // [START auth_fui_result]
     @Override
@@ -102,12 +119,9 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                // ...
+
             } else {
                 // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
             }
         }
     }
