@@ -35,8 +35,13 @@
         <activity android:name="com.google.example.fridgefriend.HomePage" >
         </activity>
 
+        <activity android:name="com.google.example.fridgefriend.navigation" >
+        </activity>
+
+
         <activity android:name=".CameraView" >
         </activity>
+
     </application>
 
 </manifest>

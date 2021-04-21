@@ -63,6 +63,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        //setContentView(R.layout.home_page);
+        TextView logT = (TextView) findViewById(R.id.textLog);
+        logT.setVisibility(View.INVISIBLE);
+
+        Button login = (Button) findViewById(R.id.loginButton);
+        findViewById(R.id.loginButton).setOnClickListener(accListner);
+        //buttons
+        findViewById(R.id.homePage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Intent intent = new Intent(MainActivity.this,HomePage.class);
+                Intent intent = new Intent(MainActivity.this,navigation.class);
+                startActivity(intent);
+            }
+        });
+
+
+
+        setContentView(R.layout.activity_main);
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
