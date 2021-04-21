@@ -67,8 +67,6 @@ public class MainActivity extends AppCompatActivity {
         TextView logT = (TextView) findViewById(R.id.textLog);
         logT.setVisibility(View.INVISIBLE);
 
-        Button login = (Button) findViewById(R.id.loginButton);
-        findViewById(R.id.loginButton).setOnClickListener(accListner);
         //buttons
         findViewById(R.id.homePage).setOnClickListener(new View.OnClickListener() {
             @Override
