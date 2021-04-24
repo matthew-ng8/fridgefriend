@@ -116,7 +116,7 @@ public class CameraView extends AppCompatActivity {
                 Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
-                //finish();
+                finish();
             }
         }
     }

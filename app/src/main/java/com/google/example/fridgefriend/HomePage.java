@@ -102,14 +102,14 @@ public class HomePage extends AppCompatActivity {
 
     }
 
-
     private void scanQRCode(){
 
-            Intent intent = new Intent(HomePage.this,CameraView.class );
+        Intent intent = new Intent(HomePage.this,CameraView.class );
 
-            startActivityForResult(intent, BARCODE_REQUEST);
+        startActivityForResult(intent, BARCODE_REQUEST);
 
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
