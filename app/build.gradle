@@ -32,6 +32,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
+    implementation 'com.google.firebase:firebase-database'
 
     //added for the QR Scanner
     implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.4'

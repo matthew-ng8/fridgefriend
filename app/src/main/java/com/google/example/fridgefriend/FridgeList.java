@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.example.fridgefriend.dummy.DummyContent;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * A fragment representing a list of Items.
@@ -49,7 +51,9 @@ public class FridgeList extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        FirebaseDatabase.getInstance().getReference().child("Matts").push().setValue("BURRITO");
+        databaseReference.push().setValue(new String("Burrito"));
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
