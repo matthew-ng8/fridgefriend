@@ -10,14 +10,21 @@
         android:icon="@drawable/ic_menu_camera" />
      -->
 
-    <EditTextPreference
+
+        <!--needs to be dynamic -->
+
+    <Preference
         app:key="group"
         app:title="@string/group_title"
+        android:summary="Dorm, Home"
         app:useSimpleSummaryProvider="true" />
 
-    <ListPreference
+    <MultiSelectListPreference
         app:key="allergies"
         app:title="@string/allerg_title"
+        android:entries = "@array/allergies_display"
+        android:entryValues="@array/allergies_values"
+        android:summary="Set your Allergies"
         app:useSimpleSummaryProvider="true" />
 
 

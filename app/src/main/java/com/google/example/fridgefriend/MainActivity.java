@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         logT.setVisibility(View.INVISIBLE);
 
         //buttons
+
         findViewById(R.id.homePage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
             //user is already logged in
             //bring to home page
             Toast.makeText(this, "Still logged in"+ Boolean.toString(this.checkCurrentUser()), Toast.LENGTH_LONG);
+
         }
         else{
             //false == user is logged in
@@ -139,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
                     firebaseAuthWithGoogle(account.getIdToken());
 
-                    Toast.makeText(this, "YOU'RE IN1" + Boolean.toString(this.checkCurrentUser()), Toast.LENGTH_SHORT).show();
                     //HERE feed data
                 } catch (ApiException e) {
                     // Google Sign In failed, update UI appropriately
@@ -148,11 +149,10 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     // Successfully signed in
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    Toast.makeText(this, "YOU'RE IN2", Toast.LENGTH_SHORT).show();
-
 
                 } else {
                     // Sign in failed. If response is null the user canceled the
+                    Toast.makeText(this, "Log In Failed.", Toast.LENGTH_LONG);
                 }
             }
         }
@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
     }
     // [END signin]
 
-    public void signOut() {
+    public static void signOut() {
         // [START auth_sign_out]
         FirebaseAuth.getInstance().signOut();
         // [END auth_sign_out]

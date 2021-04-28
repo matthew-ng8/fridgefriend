@@ -1,0 +1,9 @@
+{
+  "fridgefriend" : {
+    "inventory" : "test",
+    "shopping" : "test",
+    "users" : {
+      "uid" : "test"
+    }
+  }
+}

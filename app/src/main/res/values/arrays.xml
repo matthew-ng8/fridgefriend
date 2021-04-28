@@ -9,4 +9,25 @@
         <item>reply</item>
         <item>reply_all</item>
     </string-array>
+
+    <string-array name="allergies_display">
+        <item>Dairy Products</item>
+        <item>Egg</item>
+        <item>Nuts</item>
+        <item>Shellfish</item>
+        <item>Wheat</item>
+        <item>Soy</item>
+        <item>Fish</item>
+    </string-array>
+
+    <string-array name="allergies_values">
+        <item>D</item>
+        <item>E</item>
+        <item>N</item>
+        <item>SF</item>
+        <item>W</item>
+        <item>S</item>
+        <item>F</item>
+    </string-array>
+
 </resources>

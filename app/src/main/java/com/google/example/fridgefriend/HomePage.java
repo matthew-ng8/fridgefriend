@@ -14,11 +14,14 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.vision.barcode.Barcode;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
@@ -26,7 +29,7 @@ import androidmads.library.qrgenearator.QRGEncoder;
 public class HomePage extends AppCompatActivity {
 
     private static final int BARCODE_REQUEST = 10;
-    private TextView text;
+    private TextView text, test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,9 @@ public class HomePage extends AppCompatActivity {
         Button showQr = (Button)findViewById(R.id.qrButton);
         Button scanCode = (Button)findViewById(R.id.qrScan);
         text = (TextView)findViewById(R.id.textView2);
+        test = (TextView)findViewById(R.id.test);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        test.setText("helllo??");
 
         text.setText("HOME PAGE");
         final Context homePageContext = getApplicationContext();

@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "30511774999-iss6jsj0usoictehqqqv37n53s5luoe6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.google.example.fridgefriend",
+            "certificate_hash": "5f0e6b0a191548a37235bee3caa1e2a0a5540ef8"
+          }
+        },
+        {
           "client_id": "30511774999-hfpvoqdr5bm065fc1kn2kkgfedhhe1t6.apps.googleusercontent.com",
           "client_type": 3
         }
