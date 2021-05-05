@@ -1,5 +1,6 @@
 package com.google.example.fridgefriend;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -89,6 +90,19 @@ public class fragment_home_page extends Fragment {
         group3 = (TextView) homeP.findViewById(R.id.group3);
         add = (FloatingActionButton) homeP.findViewById(R.id.add_fridge_friend);
 
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addFridgeGroup();
+            }
+        });
+
+        group1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                firstGroup();
+            }
+        });
         //grab the groups from firebase here
 
 
@@ -96,8 +110,14 @@ public class fragment_home_page extends Fragment {
         return homeP;
     }
 
+
+    private void addFridgeGroup(){
+
+        Intent intent = new Intent(getActivity(),AddGroupView.class );
+
+    }
     //this is where i ended, doesn't work
-    public void firstGroup(View v){
+    public void firstGroup(){
         Log.d(TAG, "dorm");
     }
 
