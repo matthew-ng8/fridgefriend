@@ -1,6 +1,7 @@
 package com.google.example.fridgefriend;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,31 +30,92 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
 
+/** This Class is used to invoke a SurfaceView with a camera.
+ *  When the SurfaceView is toggled on, then the camera preview will pick up the barcode or QR code
+ *  and return that code to the calling activity.
+ *
+ * NOTE: Request Permissions for camera access before calling this class
+ *
+ */
 public class CameraView extends AppCompatActivity {
 
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     private SurfaceView cameraView;
-    private Barcode detectedBarcode;
-    private final int MY_CAMERA_REQUEST_CODE = 100;
+
+
+    private boolean isSetup;
+    private boolean isScanning;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cameraview);
-
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
-        }
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_DENIED){
-            Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
-        }
+        final Activity activity = this;
         cameraView = (SurfaceView) findViewById(R.id.surface_view);
-        //barcodeValue = (TextView) findViewById(R.id.barcode_value);
+        cameraView.setVisibility(View.INVISIBLE);
+        isScanning = false;
 
+        Button cameraButton = (Button) findViewById(R.id.scan_code);
+
+        setupSurface();
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
+                        == PackageManager.PERMISSION_GRANTED){
+                    //toggle the Surfaceview wwhen button pressed.
+                    if(isScanning){
+                        cameraView.setVisibility(View.INVISIBLE);
+                        isScanning = false;
+                    }
+                    else{
+                        cameraView.setVisibility(View.VISIBLE);
+                        isScanning = true;
+                    }
+                    //Toast.makeText(activity, "Permission allowed", Toast.LENGTH_SHORT).show();//for testing purposes
+                }else{
+                    Toast.makeText(activity, "Camera permission denied\nGo into app permissions to allow access to the camera", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        final EditText editText = findViewById(R.id.edits);
+
+        Button enterKey = findViewById(R.id.enter);
+        enterKey.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent returnIntent = new Intent();
+
+                returnIntent.putExtra("Product", editText.getText().toString());
+                setResult(FridgeList.MANUAL_ENTRY, returnIntent);
+                finish();
+            }
+        });
+
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(isSetup) {
+            cameraSource.release();
+            barcodeDetector.release();
+        }
+    }
+
+    /**
+     * sets isSetup to True
+     * instantiates cameraView , barcodeDetector and cameraView
+     */
+    private void setupSurface(){
+        isSetup = true;
+        cameraView = (SurfaceView) findViewById(R.id.surface_view);
         barcodeDetector = new BarcodeDetector.Builder(this)
                 .setBarcodeFormats(Barcode.ALL_FORMATS)//All_FORMATS
                 .build();
@@ -75,6 +138,7 @@ public class CameraView extends AppCompatActivity {
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                System.out.println("Changed");
             }
 
             @Override
@@ -101,25 +165,6 @@ public class CameraView extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        cameraSource.release();
-        barcodeDetector.release();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_CAMERA_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
-                finish();
-            }
-        }
-    }
 }
 
 
