@@ -64,10 +64,10 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         //setContentView(R.layout.home_page);
-        TextView logT = (TextView) findViewById(R.id.textLog);
-        logT.setVisibility(View.INVISIBLE);
+
 
         //buttons
+
         findViewById(R.id.homePage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        this.deleteAccount();
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -124,7 +124,9 @@ public class MainActivity extends AppCompatActivity {
         if(this.checkCurrentUser()) {
             //user is already logged in
             //bring to home page
+
             Toast.makeText(this, "Still logged in"+ Boolean.toString(this.checkCurrentUser()), Toast.LENGTH_LONG);
+
         }
         else{
             //false == user is logged in
@@ -139,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
                     firebaseAuthWithGoogle(account.getIdToken());
 
-                    Toast.makeText(this, "YOU'RE IN1" + Boolean.toString(this.checkCurrentUser()), Toast.LENGTH_SHORT).show();
                     //HERE feed data
                 } catch (ApiException e) {
                     // Google Sign In failed, update UI appropriately
@@ -148,11 +149,10 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     // Successfully signed in
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    Toast.makeText(this, "YOU'RE IN2", Toast.LENGTH_SHORT).show();
-
 
                 } else {
                     // Sign in failed. If response is null the user canceled the
+                    Toast.makeText(this, "Log In Failed.", Toast.LENGTH_LONG);
                 }
             }
         }
@@ -181,6 +181,21 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    public void deleteAccount(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null) {
+            user.delete()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "User account deleted.");
+                            }
+                        }
+                    });
+        }
+    }
+
     public void getUserProfile() {
         // [START get_user_profile]
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -201,12 +216,13 @@ public class MainActivity extends AppCompatActivity {
 
     // [START signin]
     private void signIn() {
+        this.signOut();
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
     // [END signin]
 
-    public void signOut() {
+    public static void signOut() {
         // [START auth_sign_out]
         FirebaseAuth.getInstance().signOut();
         // [END auth_sign_out]

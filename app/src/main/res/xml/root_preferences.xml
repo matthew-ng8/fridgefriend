@@ -1,35 +1,38 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory app:title="@string/messages_header">
+    <PreferenceCategory app:title="@string/setting_header">
+        <!--
+    <Preference
+        android:key="preference_key"
+        android:title="@string/preference_title"
+        android:summary="@string/preference_summary"
+        android:icon="@drawable/ic_menu_camera" />
+     -->
 
-        <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
 
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
+        <!--needs to be dynamic -->
+
+    <Preference
+        app:key="group"
+        app:title="@string/group_title"
+        android:summary="Dorm, Home"
+        app:useSimpleSummaryProvider="true" />
+
+    <MultiSelectListPreference
+        app:key="allergies"
+        app:title="@string/allerg_title"
+        android:entries = "@array/allergies_display"
+        android:entryValues="@array/allergies_values"
+        android:summary="Set your Allergies"
+        app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            android:clickable="true"
+            android:key="delete"
+            android:title="Delete Your Account" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sync_header">
-
-        <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
-
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
-
-    </PreferenceCategory>
 
 </PreferenceScreen>

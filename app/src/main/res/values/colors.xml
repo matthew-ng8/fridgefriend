@@ -2,4 +2,7 @@
 <resources>
     <color name="Lime">#FF00FF00</color>
     <color name = "GreyBlue" >#C5DDE0 </color>
+    <color name = "DarkGreyBlue" >#5D6475 </color>
+    <color name = "Red" >#900D09 </color>
+
 </resources>
