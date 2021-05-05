@@ -3,10 +3,23 @@ package com.google.example.fridgefriend;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import org.w3c.dom.Text;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,10 +32,16 @@ public class fragment_home_page extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "CustomAuthActivity";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private TextView group1, group2, group3;
+    private FloatingActionButton add;
+    private FirebaseAuth mAuth;
+
 
     public fragment_home_page() {
         // Required empty public constructor
@@ -49,16 +68,44 @@ public class fragment_home_page extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mAuth = FirebaseAuth.getInstance();
+
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home_page, container, false);
+        final View homeP = inflater.inflate(R.layout.fragment_home_page, container, false);
+        group1 = (TextView) homeP.findViewById(R.id.group1);
+        group2 = (TextView) homeP.findViewById(R.id.group2);
+        group3 = (TextView) homeP.findViewById(R.id.group3);
+        add = (FloatingActionButton) homeP.findViewById(R.id.add_fridge_friend);
+
+        //grab the groups from firebase here
+
+
+
+        return homeP;
+    }
+
+    //this is where i ended, doesn't work
+    public void firstGroup(View v){
+        Log.d(TAG, "dorm");
+    }
+
+    public void secondGroup(View v){
+
+    }
+
+    public void thirdGroup(View v){
+
     }
 }

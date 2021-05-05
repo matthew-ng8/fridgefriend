@@ -64,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         //setContentView(R.layout.home_page);
-        TextView logT = (TextView) findViewById(R.id.textLog);
-        logT.setVisibility(View.INVISIBLE);
+
 
         //buttons
 
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        this.deleteAccount();
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -125,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         if(this.checkCurrentUser()) {
             //user is already logged in
             //bring to home page
+
             Toast.makeText(this, "Still logged in"+ Boolean.toString(this.checkCurrentUser()), Toast.LENGTH_LONG);
 
         }
@@ -181,6 +181,21 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    public void deleteAccount(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null) {
+            user.delete()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "User account deleted.");
+                            }
+                        }
+                    });
+        }
+    }
+
     public void getUserProfile() {
         // [START get_user_profile]
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -201,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
 
     // [START signin]
     private void signIn() {
+        this.signOut();
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }

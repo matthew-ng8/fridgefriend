@@ -39,9 +39,7 @@ public class HomePage extends AppCompatActivity {
         Button showQr = (Button)findViewById(R.id.qrButton);
         Button scanCode = (Button)findViewById(R.id.qrScan);
         text = (TextView)findViewById(R.id.textView2);
-        test = (TextView)findViewById(R.id.test);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        test.setText("helllo??");
 
         text.setText("HOME PAGE");
         final Context homePageContext = getApplicationContext();

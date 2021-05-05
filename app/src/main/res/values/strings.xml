@@ -8,6 +8,7 @@
     <string name="sign_out">Sign Out</string>
     <!-- Preference Titles -->
     <string name="setting_header">User Profile</string>
+    <string name="group_header">Groups</string>
 
     <!-- Messages Preferences -->
     <string name="group_title">Your Groups</string>

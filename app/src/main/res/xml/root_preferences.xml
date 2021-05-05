@@ -27,11 +27,10 @@
         android:summary="Set your Allergies"
         app:useSimpleSummaryProvider="true" />
 
-
-    <Preference
-        android:title="Sign Out"
-        android:key="signout"
-        android:textColor = "@color/GreyBlue"/>
+        <Preference
+            android:clickable="true"
+            android:key="delete"
+            android:title="Delete Your Account" />
 
     </PreferenceCategory>
 
