@@ -40,7 +40,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
@@ -56,6 +58,9 @@ public class fragment_home_page extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    static final int CODE = 10;
+
     static final int NEW_ENTRY = 2;
     static final int EXISTING_ENTRY = 3;
 
@@ -69,7 +74,7 @@ public class fragment_home_page extends Fragment {
     private FloatingActionButton add;
     private FirebaseAuth mAuth;
     private ArrayList<String> groupList = new ArrayList<String>();
-
+    private ArrayList<TextView> textGroup = new ArrayList<TextView>();
 
     public fragment_home_page() {
         // Required empty public constructor
@@ -108,6 +113,7 @@ public class fragment_home_page extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
 
+
     }
 
 
@@ -121,19 +127,38 @@ public class fragment_home_page extends Fragment {
         group2 = (TextView) homeP.findViewById(R.id.group2);
         group3 = (TextView) homeP.findViewById(R.id.group3);
         add = (FloatingActionButton) homeP.findViewById(R.id.add_fridge_friend);
-
+        add.setClickable(true);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addFridgeGroup();
-                Log.d(TAG, "here pressued blue");
             }
         });
+
+
+        textGroup.add(group1);
+        textGroup.add(group2);
+        textGroup.add(group3);
+        fillListFromDatabase();
+        //doesn't delete existing data
+        updateTextViews();
 
         group1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 firstGroup();
+            }
+        });
+        group2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                secondGroup();
+            }
+        });
+        group3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                thirdGroup();
             }
         });
         //grab the groups from firebase here
@@ -147,6 +172,7 @@ public class fragment_home_page extends Fragment {
     private void addFridgeGroup(){
     Log.d(TAG, "test i'm here not in intent yet");
         Intent intent = new Intent(getActivity(),AddGroupView.class );
+        startActivityForResult(intent, CODE);
         Log.d(TAG, "test after intent yet");
 
     }
@@ -155,16 +181,18 @@ public class fragment_home_page extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode == NEW_ENTRY){
-            final String fieldNew = data.getParcelableExtra("NewG");
-            final DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference();
+        if(resultCode == NEW_ENTRY && requestCode == CODE){
+            final String fieldNew = data.getStringExtra("NewG");
+            Log.d(TAG, fieldNew);
+            DatabaseReference dataRef = FirebaseData.firebaseData.getFridgeGroup();
             dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot.hasChild(fieldNew)) {
+                    if (!snapshot.hasChild(fieldNew)) {
                         // The child doesn't exist
                         //dataRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(fieldNew);
                         groupList.add(fieldNew);
+                        updateUI();
                     }
                     else
                     {
@@ -179,13 +207,13 @@ public class fragment_home_page extends Fragment {
             });
 
         }
-        else if(requestCode == EXISTING_ENTRY){
-            final String fieldOld = data.getParcelableExtra("oldG");
-            final DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference();
+        else if(resultCode == EXISTING_ENTRY && requestCode == CODE){
+            final String fieldOld = data.getStringExtra("oldG");
+            DatabaseReference dataRef = FirebaseData.firebaseData.getFridgeGroup();
             dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot.hasChild(fieldOld)) {
+                    if (!snapshot.hasChild(fieldOld)) {
                         // The child doesn't exist
                         Toast.makeText(getActivity(), "fridgegroup doesn't exist. Would you like to make a new one?", Toast.LENGTH_LONG + Toast.LENGTH_SHORT);
 
@@ -195,6 +223,7 @@ public class fragment_home_page extends Fragment {
                         //child exists
                         //dataRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(fieldOld);
                         groupList.add(fieldOld);
+                        updateUI();
                     }
                 }
 
@@ -204,42 +233,86 @@ public class fragment_home_page extends Fragment {
                 }
             });
         }
-        updateUI();
+
+
+    }
+
+    private void fillListFromDatabase(){
+        //TODO link database and add products to the list via string
+        //fillDatabase();
+        FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference());
+        DatabaseReference localRef = FirebaseData.firebaseData.getFridgeGroup();
+        localRef = localRef.child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups");
+        localRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Object value = snapshot.getValue();
+                if(value instanceof ArrayList){
+                    groupList = (ArrayList) value;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
     }
 
     private void updateUI() {
-        FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(groupList);
 
-        if(groupList.get(0) != null)
+        FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups").setValue(groupList);
+
+
+        for(int i = 0; i <groupList.size(); i++)
         {
-            group1.setText(groupList.get(0));
-
+            textGroup.get(i).setText(groupList.get(i));
         }
-        if(groupList.get(1) != null)
+
+
+    }
+
+    private void updateTextViews() {
+        fillListFromDatabase();
+        for(int i = 0; i <groupList.size(); i++)
         {
-            group2.setText(groupList.get(1));
-
+            textGroup.get(i).setText(groupList.get(i));
         }
-        if(groupList.get(2) != null)
-        {
-            group3.setText(groupList.get(2));
 
-        }
 
     }
 
 
-    //this is where i ended, doesn't work
+
+//adds blanks for now
+
     public void firstGroup(){
-        Log.d(TAG, "dorm");
-    }
+        Log.d(TAG, "first group");
+        Toast.makeText(getActivity(), "You selected: " + group1.getText(), Toast.LENGTH_LONG).show();
 
-    public void secondGroup(View v){
-
-    }
-
-    public void thirdGroup(View v){
+        //FirebaseData.firebaseData.setFridgeGroup(FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups").child((String) group1.getText()));
+        FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference().child("groups" + "/" + group1.getText()));
 
     }
+
+    public void secondGroup(){
+        Toast.makeText(getActivity(), "You selected: " + group2.getText(), Toast.LENGTH_LONG).show();
+        FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference().child("groups" + "/" + group2.getText()));
+
+    }
+
+    public void thirdGroup(){
+        Toast.makeText(getActivity(), "You selected: " + group3.getText(), Toast.LENGTH_LONG).show();
+        FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference().child("groups" + "/" + group3.getText()));
+
+    }
+
+    //General Issues:
+    /*
+    App will stop responding when multiple groups are added. UI doesn't update when user first logs in (Maybe create another method for that.
+    Need to check if firebase data is in the right path
+    When it goes back to Home, UI is gone
+     */
 }

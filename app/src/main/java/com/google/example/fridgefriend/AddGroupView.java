@@ -32,7 +32,7 @@ public class AddGroupView extends AppCompatActivity {
                 finish();
             }
         });
-        //we should be using the QR code, will be using a string instead for now
+
         enterNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

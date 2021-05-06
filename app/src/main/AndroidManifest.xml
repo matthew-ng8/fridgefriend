@@ -42,6 +42,8 @@
         <activity android:name=".CameraView" >
         </activity>
 
+        <activity android:name=".AddGroupView" >
+        </activity>
     </application>
 
 </manifest>

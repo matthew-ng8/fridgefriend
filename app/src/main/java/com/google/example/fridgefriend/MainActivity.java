@@ -55,10 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+
     private static final String TAG = "CustomAuthActivity";
     private String mCustomToken;
     private static final int RC_SIGN_IN = 123;
     private GoogleSignInClient mGoogleSignInClient;
+
+    FirebaseData test;
     Button login;
 
     @Override
@@ -67,10 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         //setContentView(R.layout.home_page);
-        DatabaseReference localRef = FirebaseDatabase.getInstance().getReference();
-        FirebaseData.firebaseData.setFridgeList(new FridgeList());
-        localRef = FirebaseData.firebaseData.getFridgeGroup();
-
+        test = new FirebaseData();
+        FirebaseData.firebaseData = test;
         //buttons
 
         findViewById(R.id.homePage).setOnClickListener(new View.OnClickListener() {
@@ -176,8 +177,12 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            //LINE 180 GIVES A NULL FOR GET FRIDGE GROUP
-                          //  FirebaseData.firebaseData.getFridgeGroup().child(user.getUid());
+                            Log.d(TAG, user.getUid());
+                            //deletes the group :(
+                            test.setFridgeGroup(FirebaseDatabase.getInstance().getReference());
+                            //test.getFridgeGroup().child(user.getDisplayName()).setValue(user.getDisplayName());
+
+                            //was thinking to moving this add group view
 
                         } else {
                             // If sign in fails, display a message to the user.

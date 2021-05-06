@@ -16,7 +16,7 @@
     <Preference
         app:key="group"
         app:title="@string/group_title"
-        android:summary="Dorm, Home"
+        android:summary=""
         app:useSimpleSummaryProvider="true" />
 
     <MultiSelectListPreference

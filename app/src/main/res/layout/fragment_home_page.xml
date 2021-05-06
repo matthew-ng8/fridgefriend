@@ -50,7 +50,6 @@
         android:layout_height="150dp"
         android:layout_marginTop="150dp"
         android:clickable="true"
-        android:onClick="secondGroup"
 
         android:gravity="center"
         android:text=""
@@ -62,7 +61,6 @@
         android:layout_height="150dp"
         android:layout_marginTop="300dp"
         android:clickable="true"
-        android:onClick="thirdGroup"
 
         android:gravity="center"
         android:text=""
