@@ -9,6 +9,11 @@ public class FirebaseData {
     private DatabaseReference fridgeGroup;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+    private FridgeList fridgeList;
+
+
+
+    private ShoppingList shoppingList;
 
     public DatabaseReference getFridgeGroup() {
         return fridgeGroup;
@@ -32,6 +37,22 @@ public class FirebaseData {
 
     public void setmUser(FirebaseUser mUser) {
         this.mUser = mUser;
+    }
+
+    public void setFridgeList(FridgeList f){
+        this.fridgeList = f;
+    }
+
+    public FridgeList getFridgeList(){
+        return  this.fridgeList;
+    }
+
+    public ShoppingList getShoppingList() {
+        return shoppingList;
+    }
+
+    public void setShoppingList(ShoppingList shoppingList) {
+        this.shoppingList = shoppingList;
     }
 
     public FirebaseData(){}
