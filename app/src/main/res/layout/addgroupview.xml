@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Please input the fridgegroup name. If the fridgegroup already exists, please use the Add Existing Group field. If the fridgegroup is new, please use New Group?"
+        android:text="Please input the fridgegroup name. If the fridgegroup already exists, please use the Add Existing Group field. If the fridgegroup is new, please use New Group."
         android:textSize="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="15dp"
