@@ -28,18 +28,18 @@ public class AddGroupView extends AppCompatActivity {
                 Intent enterIntent = new Intent();
 
                 enterIntent.putExtra("oldG", fieldG.getText().toString());
-                setResult(RESULT_OK, enterIntent);
+                setResult(fragment_home_page.EXISTING_ENTRY, enterIntent);
                 finish();
             }
         });
-
+        //we should be using the QR code, will be using a string instead for now
         enterNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent newIntent = new Intent();
 
                 newIntent.putExtra("NewG", fieldNew.getText().toString());
-                setResult(RESULT_OK, newIntent);
+                setResult(fragment_home_page.NEW_ENTRY, newIntent);
                 finish();
             }
         });

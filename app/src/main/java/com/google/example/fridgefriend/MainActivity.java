@@ -9,6 +9,7 @@ import android.accounts.OperationCanceledException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +37,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -64,7 +67,9 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         //setContentView(R.layout.home_page);
-
+        DatabaseReference localRef = FirebaseDatabase.getInstance().getReference();
+        FirebaseData.firebaseData.setFridgeList(new FridgeList());
+        localRef = FirebaseData.firebaseData.getFridgeGroup();
 
         //buttons
 
@@ -171,6 +176,8 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            //LINE 180 GIVES A NULL FOR GET FRIDGE GROUP
+                          //  FirebaseData.firebaseData.getFridgeGroup().child(user.getUid());
 
                         } else {
                             // If sign in fails, display a message to the user.
