@@ -15,7 +15,7 @@
         android:label="SettingsFragment" />
     <fragment
         android:id="@+id/shoppingList"
-        android:name="com.google.example.fridgefriend.shoppingList"
+        android:name="com.google.example.fridgefriend.ShoppingList"
         android:label="fragment_shopping_list_list"
         tools:layout="@layout/fragment_shopping_list_list" />
     <fragment

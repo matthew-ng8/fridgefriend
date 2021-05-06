@@ -21,7 +21,7 @@ import java.util.List;
  * TODO: Replace the implementation with code for your data type and rename the class
  */
 public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.MyViewHolder> {
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name, mContentView, price;
         public ImageView thumbnail;
         public RelativeLayout viewBackground_left, viewBackground_right;
@@ -42,10 +42,6 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     private List<EdibleItem> mValues;
     private Context context;
 
-/*    public MyItemRecyclerViewAdapter(List<EdibleItem> items) {
-        mValues = items;
-    }*/
-
     public MyItemRecyclerViewAdapter(Context context, List<EdibleItem> items) {
         this.context = context;
         this.mValues = items;
@@ -55,7 +51,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_fridge_list, parent, false);
-        //return new ViewHolder(view);
+        //fragment_shopping_list
         return new MyViewHolder(view);
     }
 

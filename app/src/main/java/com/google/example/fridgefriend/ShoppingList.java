@@ -44,46 +44,37 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
 /**
  * A fragment representing a list of Items.
- *
- * TODO: reimplement the startActivtyForResult(DEPRECATED). Replace with registerForActivityResult
- * TODO: unsure why need list in both here and the RecyclerViewAdapter
  */
-public class FridgeList extends Fragment implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
+public class ShoppingList extends Fragment implements  RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-
+    private List<EdibleItem> ITEMS ;
+    private MyItemRecyclerViewAdapter2 mAdapter;
+    private ConstraintLayout mConstraintLayout;
     private static final int BARCODE_REQUEST = 10;
     static final int MANUAL_ENTRY = 2;
-
-    private List<EdibleItem> ITEMS ;
-    private MyItemRecyclerViewAdapter mAdapter;
-    private ConstraintLayout mConstraintLayout;
-    private boolean goingToShoppingList;
-
-
+    boolean goingToFrigeList = false;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public FridgeList() {
+    public ShoppingList() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static FridgeList newInstance(int columnCount) {
-        FridgeList fragment = new FridgeList();
+    public static ShoppingList newInstance(int columnCount) {
+        ShoppingList fragment = new ShoppingList();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -93,31 +84,29 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DatabaseReference localRef = FirebaseDatabase.getInstance().getReference();
+
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-
         ITEMS = new ArrayList<EdibleItem>();
-        FirebaseData.firebaseData.setFridgeList(this);
+        FirebaseData.firebaseData.setShoppingList(this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fridge_list_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_shopping_list_list, container, false);
         RecyclerView recyclerView = ((ViewGroup)view).findViewById(R.id.list);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
-
-        mAdapter = new MyItemRecyclerViewAdapter(requireContext(), ITEMS);
-        fillListFromDatabase();
-
+        mAdapter = new MyItemRecyclerViewAdapter2(requireContext(), ITEMS);
         mConstraintLayout = view.findViewById(R.id.constraint_fridgeList);
+        fillListFromDatabase();
         // Set the adapter
         if (recyclerView != null) {
             Context context = view.getContext();
+
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -125,7 +114,6 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
             }
             recyclerView.setAdapter(mAdapter);
         }
-
         FloatingActionButton foodFab= view.findViewById(R.id.add_food_fab);
         foodFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,7 +123,6 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
         });
         return view;
     }
-
 
     private void scanBarcode(){
 
@@ -159,9 +146,9 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
 
 
                 //productView.setText(barcode.rawValue);
-            //String text ="rawValue = "  + barcode.rawValue+ " valueTpye = " + valueType;
-            //textView.setText(text);
-            Log.d("Testing stuff", barcode.displayValue);
+                //String text ="rawValue = "  + barcode.rawValue+ " valueTpye = " + valueType;
+                //textView.setText(text);
+                Log.d("Testing stuff", barcode.displayValue);
 
             RequestQueue queue = Volley.newRequestQueue(requireContext());
             String url ="https://api.upcitemdb.com/prod/trial/lookup?upc=";
@@ -204,9 +191,7 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
             addProduct(local_text);
             //textView.setText(text);
         }
-        FirebaseData.firebaseData.getFridgeGroup().child("fridgelist").setValue(ITEMS);
-        //FirebaseData.firebaseData.getFridgeGroup().child("fridgefriend").child("code").setValue("QWERTY");
-
+        FirebaseData.firebaseData.getFridgeGroup().child("shoppinglist").setValue(ITEMS);
     }
 
     private void fillListFromDatabase(){
@@ -214,7 +199,7 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
         //fillDatabase();
         FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference());
         DatabaseReference localRef = FirebaseData.firebaseData.getFridgeGroup();
-        localRef = localRef.child("fridgelist");
+        localRef = localRef.child("shoppinglist");
         localRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -248,19 +233,9 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
         mAdapter.addItem(localEdibleItem, count);
     }
 
-
-    /**
-     * A public method to allow other classes to add to the
-     * @param productName name of the product to be created
-     */
-    public void addFromShoppingList(String productName){
-        addProduct(productName);
-        FirebaseData.firebaseData.getFridgeGroup().child("fridgelist").setValue(ITEMS);
-    }
-
-
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        String snackbarText = " removed from fridge list";
+        String snackbarText = " removed from shopping list!";
+
         if (viewHolder instanceof MyItemRecyclerViewAdapter.MyViewHolder) {
             // get the removed item name to display it in snack bar
             String name = ITEMS.get(viewHolder.getAdapterPosition()).getName();
@@ -275,9 +250,10 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
                 //Toast.makeText(getContext(), "left!!!", Toast.LENGTH_SHORT).show();
             }else if(direction == ItemTouchHelper.RIGHT){
                 //send to shopping list
-                goingToShoppingList = true;
-                snackbarText = " sent to shopping list";
                 //Toast.makeText(getContext(), "RIGHT!!!", Toast.LENGTH_SHORT).show();
+                snackbarText = " sent to fridge list";
+                goingToFrigeList = true;
+
             }
 
             mAdapter.removeItem(viewHolder.getAdapterPosition());
@@ -299,8 +275,9 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
                 public void onDismissed(Snackbar snackbar, int event) {
                     if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
                         // Snackbar closed on its own so we can upate the list
-                        sendToShoppingList(deletedItem.getName());
-                        FirebaseData.firebaseData.getFridgeGroup().child("fridgelist").setValue(ITEMS);
+                        sendToFridgeList(deletedItem.getName());
+                        FirebaseData.firebaseData.getFridgeGroup().child("shoppinglist").setValue(ITEMS);
+
                     }
 
                 }
@@ -309,25 +286,34 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
             snackbar.setActionTextColor(Color.YELLOW);
             snackbar.show();
         }
-
     }
 
-    private void sendToShoppingList(String s){
-        FragmentManager f = getParentFragmentManager();
-        if(goingToShoppingList){
-            ShoppingList shopList = FirebaseData.firebaseData.getShoppingList();
-            shopList.addFromFridgeList(s);
-            goingToShoppingList ^= goingToShoppingList;//i googled the coolest way to invert boolean
-        }
-    }
-
-
-    //TODO delete this section; was for testing only
     private void fillDatabase(){
         FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference());
         DatabaseReference localRef = FirebaseData.firebaseData.getFridgeGroup();
-        localRef = localRef.child("fridgelist");
+        for(int i = 0; i < 10;i++){
+
+        }
+
+        localRef = localRef.child("shoppinglist");
         localRef.setValue(ITEMS);
     }
 
+    private void sendToFridgeList(String s){
+        //FragmentManager f = getParentFragmentManager();
+        if(goingToFrigeList){
+            FridgeList f = FirebaseData.firebaseData.getFridgeList();
+            f.addFromShoppingList(s);
+            goingToFrigeList ^= goingToFrigeList;//i googled the coolest way to invert boolean
+        }
+    }
+
+    /**
+     * A public method to allow other classes to add to the
+     * @param productName name of the product to be created
+     */
+    public void addFromFridgeList(String productName){
+        addProduct(productName);
+        FirebaseData.firebaseData.getFridgeGroup().child("shoppinglist").setValue(ITEMS);
+    }
 }
