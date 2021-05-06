@@ -16,7 +16,7 @@
     <Preference
         app:key="group"
         app:title="@string/group_title"
-        android:summary="Dorm, Home"
+        android:summary=""
         app:useSimpleSummaryProvider="true" />
 
     <MultiSelectListPreference
@@ -24,7 +24,6 @@
         app:title="@string/allerg_title"
         android:entries = "@array/allergies_display"
         android:entryValues="@array/allergies_values"
-        android:summary="Set your Allergies"
         app:useSimpleSummaryProvider="true" />
 
         <Preference

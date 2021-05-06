@@ -9,6 +9,7 @@ import android.accounts.OperationCanceledException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +37,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -52,10 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+
     private static final String TAG = "CustomAuthActivity";
     private String mCustomToken;
     private static final int RC_SIGN_IN = 123;
     private GoogleSignInClient mGoogleSignInClient;
+
+    FirebaseData test;
     Button login;
 
     @Override
@@ -64,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         //setContentView(R.layout.home_page);
-
-
+        test = new FirebaseData();
+        FirebaseData.firebaseData = test;
         //buttons
 
         findViewById(R.id.homePage).setOnClickListener(new View.OnClickListener() {
@@ -171,6 +177,12 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            Log.d(TAG, user.getUid());
+                            //deletes the group :(
+                            test.setFridgeGroup(FirebaseDatabase.getInstance().getReference());
+                            //test.getFridgeGroup().child(user.getDisplayName()).setValue(user.getDisplayName());
+
+                            //was thinking to moving this add group view
 
                         } else {
                             // If sign in fails, display a message to the user.

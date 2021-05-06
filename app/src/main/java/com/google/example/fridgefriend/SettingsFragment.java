@@ -1,6 +1,8 @@
 package com.google.example.fridgefriend;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -8,8 +10,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -24,10 +28,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.Set;
+
 public class SettingsFragment extends PreferenceFragmentCompat {
     private static final String TAG = "TAG: ";
     private FirebaseAuth mAuth;
     private Preference delete;
+    private MultiSelectListPreference allergies;
+    private Context Context;
 
 
     @Override
@@ -35,6 +43,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
         mAuth = FirebaseAuth.getInstance();
         Preference delete = (Preference) findPreference("delete");
+        MultiSelectListPreference allergies = (MultiSelectListPreference) findPreference("allergies");
 
         delete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
