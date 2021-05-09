@@ -1,11 +1,15 @@
 package com.google.example.fridgefriend;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.nfc.Tag;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.preference.Preference;
@@ -111,7 +115,6 @@ public class fragment_home_page extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         mAuth = FirebaseAuth.getInstance();
-
 
 
     }
@@ -275,7 +278,7 @@ public class fragment_home_page extends Fragment {
     }
 
     private void updateTextViews() {
-        fillListFromDatabase();
+        //fillListFromDatabase();
         for(int i = 0; i <groupList.size(); i++)
         {
             textGroup.get(i).setText(groupList.get(i));
