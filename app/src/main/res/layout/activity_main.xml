@@ -7,20 +7,40 @@
     tools:context=".MainActivity"
     tools:ignore="MissingClass">
 
-
-    <Button
-        android:id="@+id/homePage"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="218dp"
-        android:text="For Testing"
+        android:background="@color/GreyBlue"
+        android:minHeight="?attr/actionBarSize"
+        app:title="fridgefriend"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/google_button"
+        android:layout_width="0dp"
+        android:layout_height="127dp"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+        android:layout_marginStart="73dp"
+        android:layout_marginEnd="73dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="676dp"
+        android:background="@color/GreyBlue"
+        android:minHeight="?attr/actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="-9dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

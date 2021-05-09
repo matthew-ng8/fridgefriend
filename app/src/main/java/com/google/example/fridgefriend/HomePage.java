@@ -38,10 +38,8 @@ public class HomePage extends AppCompatActivity {
 
         Button showQr = (Button)findViewById(R.id.qrButton);
         Button scanCode = (Button)findViewById(R.id.qrScan);
-        text = (TextView)findViewById(R.id.textView2);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        text.setText("HOME PAGE");
         final Context homePageContext = getApplicationContext();
 
         showQr.setOnClickListener(new View.OnClickListener() {
