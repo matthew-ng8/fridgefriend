@@ -1,13 +1,16 @@
 
 package com.google.example.fridgefriend;
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Bundle;
@@ -19,6 +22,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -73,15 +78,19 @@ public class MainActivity extends AppCompatActivity {
         test = new FirebaseData();
         FirebaseData.firebaseData = test;
         //buttons
+        final Activity mainAc = this;
 
         findViewById(R.id.homePage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Intent intent = new Intent(MainActivity.this,HomePage.class);
+
                 Intent intent = new Intent(MainActivity.this,navigation.class);
                 startActivity(intent);
             }
         });
+
+
 
         this.deleteAccount();
 
@@ -164,6 +173,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //1 and then 2 wil show; we can just use 2
+
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, 12);
+        }
     }
     // [END auth_fui_result]
 
