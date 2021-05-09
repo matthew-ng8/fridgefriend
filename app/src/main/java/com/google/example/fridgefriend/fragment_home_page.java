@@ -266,7 +266,7 @@ public class fragment_home_page extends Fragment {
 
     private void updateUI() {
 
-        FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups").setValue(groupList);
+        //FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups").setValue(groupList);
 
 
         for(int i = 0; i <groupList.size(); i++)
