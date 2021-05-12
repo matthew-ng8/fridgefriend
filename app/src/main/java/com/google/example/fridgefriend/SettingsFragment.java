@@ -27,23 +27,32 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     private static final String TAG = "TAG: ";
     private FirebaseAuth mAuth;
-    private Preference delete;
+    private Preference delete, group;
     private MultiSelectListPreference allergies;
     private Context Context;
+    private ArrayList<String> groupList = new ArrayList<String>();
 
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
         mAuth = FirebaseAuth.getInstance();
-        Preference delete = (Preference) findPreference("delete");
-        MultiSelectListPreference allergies = (MultiSelectListPreference) findPreference("allergies");
+        delete = (Preference) findPreference("delete");
+        group = (Preference) findPreference("group");
+        updateUI();
+        allergies = (MultiSelectListPreference) findPreference("allergies");
 
         delete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
@@ -70,7 +79,67 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
     }
 
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        // just update all
 
+        allergies.setSummary("dummy"); // required or will not update
+        allergies.setOnPreferenceChangeListener(new        Preference.OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                MultiSelectListPreference mPreference = (MultiSelectListPreference)preference;
+                int id = 0;
+                for (int i = 0; i < mPreference.getEntryValues().length; i++)
+                {
+                    if(mPreference.getEntryValues()[i].equals(newValue.toString())){
+                        id = i;
+                        break;
+                    }
+                }
+                allergies.setSummary(mPreference.getEntries()[id]);
+                return true;
+            }
+        });
+
+    }
+
+    private void updateUI() {
+
+        //FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups").setValue(groupList);
+
+        String allGroups = "";
+        for (int i = 0; i < groupList.size(); i++) {
+            allGroups += groupList.get(i);
+        }
+
+        group.setSummary((CharSequence)allGroups);
+    }
+
+
+        private void fillListFromDatabase(){
+        //TODO link database and add products to the list via string
+        //fillDatabase();
+        FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference());
+        DatabaseReference localRef = FirebaseData.firebaseData.getFridgeGroup();
+        localRef = localRef.child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups");
+        localRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Object value = snapshot.getValue();
+                if(value instanceof ArrayList){
+                    groupList = (ArrayList) value;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
+        }
 
 
 }
