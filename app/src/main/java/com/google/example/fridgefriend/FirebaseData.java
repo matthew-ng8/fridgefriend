@@ -5,19 +5,17 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
 public class FirebaseData {
-    static FirebaseData firebaseData = new FirebaseData();
+    static FirebaseData firebaseData;
     private DatabaseReference fridgeGroup;
+    private String fridgeGroupName;
+    private DatabaseReference myUserRef;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private FridgeList fridgeList;
-
-
-
     private ShoppingList shoppingList;
 
-    public DatabaseReference getFridgeGroup() {
-        return fridgeGroup;
-    }
+
+
 
     public FirebaseAuth getmAuth() {
         return mAuth;
@@ -27,8 +25,18 @@ public class FirebaseData {
         return mUser;
     }
 
+    public DatabaseReference getFridgeGroup() {
+        return fridgeGroup;
+    }
     public void setFridgeGroup(DatabaseReference fridgeGroup) {
         this.fridgeGroup = fridgeGroup;
+    }
+
+    public String getFridgeGroupName() {
+        return fridgeGroupName;
+    }
+    public void setFridgeGroupName(String fridgeGroupName) {
+        this.fridgeGroupName = fridgeGroupName;
     }
 
     public void setmAuth(FirebaseAuth mAuth) {
@@ -37,6 +45,14 @@ public class FirebaseData {
 
     public void setmUser(FirebaseUser mUser) {
         this.mUser = mUser;
+    }
+
+    public DatabaseReference getMyUserRef() {
+        return myUserRef;
+    }
+
+    public void setMyUserRef(DatabaseReference myUserRef) {
+        this.myUserRef = myUserRef;
     }
 
     public void setFridgeList(FridgeList f){
@@ -56,6 +72,12 @@ public class FirebaseData {
     }
 
     public FirebaseData(){}
+
+    public static FirebaseData initFirebaseData(){
+        firebaseData = new FirebaseData();
+        return firebaseData;
+    }
+
 
 
 

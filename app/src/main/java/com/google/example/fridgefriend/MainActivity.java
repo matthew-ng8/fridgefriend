@@ -75,8 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         //setContentView(R.layout.home_page);
-        test = new FirebaseData();
-        FirebaseData.firebaseData = test;
+        test = FirebaseData.initFirebaseData();
         //buttons
         final Activity mainAc = this;
 

@@ -46,7 +46,9 @@ import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
@@ -78,6 +80,7 @@ public class fragment_home_page extends Fragment {
     private FloatingActionButton add;
     private FirebaseAuth mAuth;
     private ArrayList<String> groupList = new ArrayList<String>();
+    private ArrayList<String> groupCodes = new ArrayList<String>();
     private ArrayList<TextView> textGroup = new ArrayList<TextView>();
 
     public fragment_home_page() {
@@ -106,8 +109,6 @@ public class fragment_home_page extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DatabaseReference localRef = FirebaseDatabase.getInstance().getReference();
-        FirebaseData.firebaseData.setFridgeList(new FridgeList());
-        localRef = FirebaseData.firebaseData.getFridgeGroup();
 
 
         if (getArguments() != null) {
@@ -115,6 +116,26 @@ public class fragment_home_page extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         mAuth = FirebaseAuth.getInstance();
+
+        //set user reference
+        FirebaseData.firebaseData.setMyUserRef(FirebaseDatabase.getInstance().getReference().child("users/" +FirebaseAuth.getInstance().getCurrentUser().getDisplayName()));
+
+        //listener for when groups change and gets the current database
+        fillListFromDatabase();
+
+
+        //TODO delete all below for testing when submitting
+        /*HashMap<String, String> testmap = new HashMap<>();
+        testmap.put("QWERT", "homeGroup1");
+        testmap.put("ASDF", "dormGroup3");
+        localRef.child("groupsMap").setValue(testmap);
+
+
+        ArrayList<String> shoppingListArray = new ArrayList<>(Arrays.asList("Peabuts", "Chocolate", "Melons"));
+        localRef.child("groupsTesting/QWERT/shoppinglist").setValue(shoppingListArray);
+
+        ArrayList<String> fridgeListArray = new ArrayList<>(Arrays.asList("ramen", "milk", "beans"));
+        localRef.child("groupsTesting/QWERT/fridgeList").setValue(fridgeListArray);*/
 
 
     }
@@ -142,7 +163,7 @@ public class fragment_home_page extends Fragment {
         textGroup.add(group1);
         textGroup.add(group2);
         textGroup.add(group3);
-        fillListFromDatabase();
+
         //doesn't delete existing data
         updateTextViews();
 
@@ -180,94 +201,54 @@ public class fragment_home_page extends Fragment {
 
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(resultCode == NEW_ENTRY && requestCode == CODE){
-            final String fieldNew = data.getStringExtra("NewG");
-            Log.d(TAG, fieldNew);
-            DatabaseReference dataRef = FirebaseData.firebaseData.getFridgeGroup();
-            dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    if (!snapshot.hasChild(fieldNew)) {
-                        // The child doesn't exist
-                        //dataRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(fieldNew);
-                        groupList.add(fieldNew);
-                        updateUI();
-                    }
-                    else
-                    {
-                        Toast.makeText(getActivity(), "fridgegroup already exists. Enter a new name.", Toast.LENGTH_LONG + Toast.LENGTH_SHORT);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
-        }
-        else if(resultCode == EXISTING_ENTRY && requestCode == CODE){
-            final String fieldOld = data.getStringExtra("oldG");
-            DatabaseReference dataRef = FirebaseData.firebaseData.getFridgeGroup();
-            dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    if (!snapshot.hasChild(fieldOld)) {
-                        // The child doesn't exist
-                        Toast.makeText(getActivity(), "fridgegroup doesn't exist. Would you like to make a new one?", Toast.LENGTH_LONG + Toast.LENGTH_SHORT);
-
-                    }
-                    else
-                    {
-                        //child exists
-                        //dataRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(fieldOld);
-                        groupList.add(fieldOld);
-                        updateUI();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
-
-
-    }
-
+    /** Fills the groupCodes array with values from /root/users/userName/groups
+     *  Changes in database result in:
+     *      - a call to updateUI()
+     *      - groupMap retrieved from /root/groupsMap to identify the group name from the group code
+     *
+     */
     private void fillListFromDatabase(){
-        //TODO link database and add products to the list via string
-        //fillDatabase();
-        FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference());
-        DatabaseReference localRef = FirebaseData.firebaseData.getFridgeGroup();
-        localRef = localRef.child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups");
-        localRef.addValueEventListener(new ValueEventListener() {
+        DatabaseReference localMyRefGroups = FirebaseData.firebaseData.getMyUserRef().child("groups");
+
+        //Retrieves all the user's groups
+        localMyRefGroups.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Object value = snapshot.getValue();
                 if(value instanceof ArrayList){
-                    groupList = (ArrayList) value;
+                    groupCodes = (ArrayList) value;
+                    updateUI();
+                    //retrieve the map from Firebase Database once and then get the corresponding names
+                    DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference().child("/groupsMap");
+                    dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            Object value = snapshot.getValue();
+                            if(value instanceof HashMap){
+                                HashMap groupMap = (HashMap)value;
+                                groupList.clear();
+                                for(String s : groupCodes){
+                                    if(groupMap.containsKey(s)) {
+                                        groupList.add((String) groupMap.get(s));
+                                    }
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {}
+                    });
                 }
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
-
-
     }
+
 
     private void updateUI() {
 
-        FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups").setValue(groupList);
-
+        //FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups").setValue(groupList);
+        FirebaseData.firebaseData.getMyUserRef().child("groups").setValue(groupList);
 
         for(int i = 0; i <groupList.size(); i++)
         {
@@ -290,25 +271,35 @@ public class fragment_home_page extends Fragment {
 
 
 //adds blanks for now
+    //path to a fridgeGroup would be root/groups/groupCode
+
+    /**TODO add an array to keep track of the groupCodes so there's two arrays?
+     * One array to keep track of the group names and one to keep track of the codes
+     * */
+
+
 
     public void firstGroup(){
         Log.d(TAG, "first group");
         Toast.makeText(getActivity(), "You selected: " + group1.getText(), Toast.LENGTH_LONG).show();
 
         //FirebaseData.firebaseData.setFridgeGroup(FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups").child((String) group1.getText()));
-        FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference().child("groups" + "/" + group1.getText()));
+        FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference().child("groups" + "/" + groupCodes.get(0)));
+        FirebaseData.firebaseData.setFridgeGroupName(group1.getText().toString());
 
     }
 
     public void secondGroup(){
         Toast.makeText(getActivity(), "You selected: " + group2.getText(), Toast.LENGTH_LONG).show();
-        FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference().child("groups" + "/" + group2.getText()));
+        FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference().child("groups" + "/" + groupCodes.get(1)));
+        FirebaseData.firebaseData.setFridgeGroupName(group1.getText().toString());
 
     }
 
     public void thirdGroup(){
         Toast.makeText(getActivity(), "You selected: " + group3.getText(), Toast.LENGTH_LONG).show();
-        FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference().child("groups" + "/" + group3.getText()));
+        FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference().child("groups" + "/" + groupCodes.get(2)));
+        FirebaseData.firebaseData.setFridgeGroupName(group1.getText().toString());
 
     }
 
