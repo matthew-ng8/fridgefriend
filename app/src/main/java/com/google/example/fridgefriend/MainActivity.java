@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -73,24 +74,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         setContentView(R.layout.activity_main);
         //setContentView(R.layout.home_page);
         test = FirebaseData.initFirebaseData();
         //buttons
         final Activity mainAc = this;
 
-        findViewById(R.id.homePage).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.google_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent intent = new Intent(MainActivity.this,HomePage.class);
+                startLoginProcess();
+                Log.d(TAG, "logged in");
 
-                Intent intent = new Intent(MainActivity.this,navigation.class);
-                startActivity(intent);
             }
         });
 
 
+    }
 
+    public void startLoginProcess(){
         this.deleteAccount();
 
         // Configure Google Sign In
@@ -103,8 +106,9 @@ public class MainActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         //non null
         mAuth = FirebaseAuth.getInstance();
-        //update UI
+        this.signIn();
 
+        //update UI
     }
 
     public boolean checkCurrentUser() {
@@ -126,8 +130,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        this.signIn();
+       //this.signIn();
+
     }
 
     // [START auth_fui_result]
@@ -194,8 +198,8 @@ public class MainActivity extends AppCompatActivity {
                             //deletes the group :(
                             test.setFridgeGroup(FirebaseDatabase.getInstance().getReference());
                             //test.getFridgeGroup().child(user.getDisplayName()).setValue(user.getDisplayName());
-
-                            //was thinking to moving this add group view
+                            Intent intent = new Intent(MainActivity.this,navigation.class);
+                            startActivity(intent);
 
                         } else {
                             // If sign in fails, display a message to the user.

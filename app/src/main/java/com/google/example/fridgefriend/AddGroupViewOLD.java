@@ -8,7 +8,7 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class AddGroupView extends AppCompatActivity {
+public class AddGroupViewOLD extends AppCompatActivity {
 
     private Button enterG, enterNew;
     private EditText fieldG, fieldNew;

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="60dp"
+        android:textSize="15dp"
+        android:text="Please enter the group name. Hit enter for the QR code." />
+
+    <ImageView
+        android:id="@+id/qrShow"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="fill"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="200dp"/>
+
+
+    <EditText
+        android:id="@+id/addGroup"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="125dp"
+        android:hint="Enter Group Name" />
+
+    <Button
+        android:id="@+id/newGroup"
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="125dp"
+        android:layout_marginLeft = "320dp"
+        android:text="Enter" />
+
+
+</RelativeLayout>

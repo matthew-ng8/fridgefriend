@@ -125,9 +125,10 @@ public class ShoppingList extends Fragment implements  RecyclerItemTouchHelper.R
     }
 
     private void scanBarcode(){
-
         Intent intent = new Intent(getActivity(),CameraView.class );
-
+        Bundle b = new Bundle();
+        b.putInt("BARCODE", BARCODE_REQUEST); //Your id
+        intent.putExtras(b); //Put your id to your next Intent
         startActivityForResult(intent, BARCODE_REQUEST);
 
     }

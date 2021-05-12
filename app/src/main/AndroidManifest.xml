@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.google.example.fridgefriend.HomePage" >
+        <activity android:name="com.google.example.fridgefriend.AddGroup" >
         </activity>
 
         <activity android:name="com.google.example.fridgefriend.navigation" >
@@ -42,7 +42,7 @@
         <activity android:name=".CameraView" >
         </activity>
 
-        <activity android:name=".AddGroupView" >
+        <activity android:name=".AddGroupViewOLD" >
         </activity>
     </application>
 

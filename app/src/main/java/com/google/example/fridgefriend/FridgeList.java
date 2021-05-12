@@ -64,7 +64,7 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
     // TODO: Customize parameters
     private int mColumnCount = 1;
 
-    private static final int BARCODE_REQUEST = 10;
+    private static final int BARCODE_REQUEST = 11;
     static final int MANUAL_ENTRY = 2;
 
     private List<EdibleItem> ITEMS ;
@@ -140,7 +140,9 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
     private void scanBarcode(){
 
         Intent intent = new Intent(getActivity(),CameraView.class );
-
+        Bundle b = new Bundle();
+        b.putInt("BARCODE", BARCODE_REQUEST); //Your id
+        intent.putExtras(b); //Put your id to your next Intent
         startActivityForResult(intent, BARCODE_REQUEST);
 
     }
