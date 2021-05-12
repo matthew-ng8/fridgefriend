@@ -44,6 +44,14 @@
         android:textColor = "@color/DarkGreyBlue"
         />
 
+    <Button
+        android:id="@+id/group1Show"
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft = "320dp"
+        android:text="Show QR" />
+
     <TextView
         android:id="@+id/group2"
         android:layout_width="match_parent"
@@ -55,6 +63,14 @@
         android:text=""
         android:textColor = "@color/DarkGreyBlue"/>
 
+    <Button
+        android:id="@+id/group2Show"
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="320dp"
+        android:layout_marginTop="250dp"
+        android:text="Show QR" />
+
     <TextView
         android:id="@+id/group3"
         android:layout_width="match_parent"
@@ -65,6 +81,13 @@
         android:gravity="center"
         android:text=""
         android:textColor = "@color/DarkGreyBlue"/>
+    <Button
+        android:id="@+id/group3Show"
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="400dp"
+        android:layout_marginLeft = "320dp"
+        android:text="Show QR" />
 
 
 

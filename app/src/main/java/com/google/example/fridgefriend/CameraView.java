@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -27,6 +28,9 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.io.IOException;
 
@@ -39,27 +43,37 @@ import java.io.IOException;
  */
 public class CameraView extends AppCompatActivity {
 
+    public static final int QR_SCAN = 4;
+    private static final int BARCODE_REQUEST = 11;
+    static final int CODE = 10;
+
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     private SurfaceView cameraView;
 
+    private Button cameraButton;
 
     private boolean isSetup;
     private boolean isScanning;
 
+    private EditText editText;
+    private Button enterKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cameraview);
-        final Activity activity = this;
         cameraView = (SurfaceView) findViewById(R.id.surface_view);
         cameraView.setVisibility(View.INVISIBLE);
+
+        cameraButton = (Button) findViewById(R.id.scan_code);
+
         isScanning = false;
 
-        Button cameraButton = (Button) findViewById(R.id.scan_code);
-
+        final Activity activity = this;
         setupSurface();
+        editText.setVisibility(View.VISIBLE);
+        enterKey.setVisibility(View.VISIBLE);
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,9 +96,9 @@ public class CameraView extends AppCompatActivity {
             }
         });
 
-        final EditText editText = findViewById(R.id.edits);
+       editText = findViewById(R.id.edits);
+       enterKey = findViewById(R.id.enter);
 
-        Button enterKey = findViewById(R.id.enter);
         enterKey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,6 +112,41 @@ public class CameraView extends AppCompatActivity {
 
 
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+       if(resultCode == QR_SCAN && requestCode == CODE){
+            editText.setVisibility(View.INVISIBLE);
+            enterKey.setVisibility(View.INVISIBLE);
+
+            //change the UI so the edit text and button doesn't appear
+           IntentIntegrator intentIntegrator = new IntentIntegrator(this);
+           intentIntegrator.setPrompt("Scan a barcode or QR Code");
+           intentIntegrator.setOrientationLocked(true);
+           intentIntegrator.initiateScan();
+
+           IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+           // if the intentResult is null then
+           // toast a message as "cancelled"
+           if (intentResult != null) {
+               if (intentResult.getContents() == null) {
+                   Toast.makeText(getBaseContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+               } else {
+                   // if the intentResult is not null we'll set
+                   // the content and format of scan message
+                   //messageText.setText(intentResult.getContents());
+                   //send back intentResult.getContents();
+                   setResult(fragment_home_page.QR_CODE, intentResult.getContents());
+                   finish();
+               }
+           } else {
+               super.onActivityResult(requestCode, resultCode, data);
+           }
+
+        }
     }
 
     @Override
