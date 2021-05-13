@@ -1,32 +1,39 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
     android:orientation="vertical">
 
-
-    <SurfaceView
-        android:id="@+id/surface_view"
-        android:layout_width="match_parent"
-        android:layout_height="450dp"
-        android:layout_gravity="fill"
-        android:layout_margin="5dp" />
-
-    <Button
-        android:id="@+id/close"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Close QR CODE"
-        android:layout_margin="10dp"
+    <TextView
+        android:id="@+id/qrTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="64dp"
+        android:text="Your FridgeFriend Code"
+        android:gravity="center"
+        android:background="#FFFFBB33"
+        android:textSize="30sp"
 
         />
 
+    <ImageView
+        android:id="@+id/qrView"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
 
+        />
 
+    <TextView
+        android:id="@+id/qrCode"
+        android:layout_width="256dp"
+        android:layout_height="128dp"
+        android:layout_gravity="center"
+        android:textSize="64sp"
+        />
 
-
-</androidx.appcompat.widget.LinearLayoutCompat>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/qrClose"
+        android:layout_gravity="center"
+        android:text="Close"
+        />
+</LinearLayout>

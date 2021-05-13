@@ -39,4 +39,14 @@
         android:text="Enter" />
 
 
+
+    <Button
+        android:id="@+id/scanExistQR"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="175dp"
+        android:layout_marginTop="500dp"
+        android:text="Scan QR Code" />
+
+
 </RelativeLayout>

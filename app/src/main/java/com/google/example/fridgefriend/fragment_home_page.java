@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +61,11 @@ public class fragment_home_page extends Fragment {
     private ArrayList<String> groupList = new ArrayList<String>();
     private ArrayList<String> groupCodes = new ArrayList<String>();
     private ArrayList<TextView> textGroup = new ArrayList<TextView>();
+    private ArrayList<Button> buttonGroup = new ArrayList<Button>();
+
+
+
+    private Button group1Button, group2Button, group3Button;
 
     public fragment_home_page() {
         // Required empty public constructor
@@ -128,6 +134,11 @@ public class fragment_home_page extends Fragment {
         group1 = (TextView) homeP.findViewById(R.id.group1);
         group2 = (TextView) homeP.findViewById(R.id.group2);
         group3 = (TextView) homeP.findViewById(R.id.group3);
+
+        group1Button = (Button) homeP.findViewById(R.id.group1Show);
+        group2Button = (Button) homeP.findViewById(R.id.group2Show);
+        group3Button = (Button) homeP.findViewById(R.id.group3Show);
+
         add = (FloatingActionButton) homeP.findViewById(R.id.add_fridge_friend);
         add.setClickable(true);
         add.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +152,11 @@ public class fragment_home_page extends Fragment {
         textGroup.add(group1);
         textGroup.add(group2);
         textGroup.add(group3);
+
+        buttonGroup.add(group1Button);
+        buttonGroup.add(group2Button);
+        buttonGroup.add(group3Button);
+
 
         //doesn't delete existing data
         updateTextViews();
@@ -165,6 +181,12 @@ public class fragment_home_page extends Fragment {
         });
         //grab the groups from firebase here
 
+        group1Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
 
         return homeP;
@@ -224,16 +246,19 @@ public class fragment_home_page extends Fragment {
 
 
     private void updateUI() {
-
-        //FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups").setValue(groupList);
-
-
-        //FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups").setValue(groupList);
         FirebaseData.firebaseData.getMyUserRef().child("groups").setValue(groupList);
 
         for(int i = 0; i <groupList.size(); i++)
         {
             textGroup.get(i).setText(groupList.get(i));
+            if(groupList.get(i).length()>1 ){
+                buttonGroup.get(i).setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                buttonGroup.get(i).setVisibility(View.INVISIBLE);
+
+            }
         }
 
 
