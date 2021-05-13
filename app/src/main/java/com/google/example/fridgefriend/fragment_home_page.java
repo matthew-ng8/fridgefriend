@@ -1,6 +1,9 @@
 package com.google.example.fridgefriend;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,10 +11,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,8 +35,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import androidmads.library.qrgenearator.QRGContents;
+import androidmads.library.qrgenearator.QRGEncoder;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.WINDOW_SERVICE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -102,7 +113,7 @@ public class fragment_home_page extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         //set user reference
-        FirebaseData.firebaseData.setMyUserRef(FirebaseDatabase.getInstance().getReference().child("users/" +FirebaseAuth.getInstance().getCurrentUser().getDisplayName()));
+        FirebaseData.firebaseData.setMyUserRef(FirebaseDatabase.getInstance().getReference().child("users/" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getDisplayName()));
 
         //listener for when groups change and gets the current database
         fillListFromDatabase();
@@ -112,7 +123,7 @@ public class fragment_home_page extends Fragment {
         /*HashMap<String, String> testmap = new HashMap<>();
         testmap.put("QWERT", "homeGroup1");
         testmap.put("ASDF", "dormGroup3");
-        localRef.child("groupsMap").setValue(testmap);
+        localRef.child(")groupsMap".setValue(testmap);
 
 
         ArrayList<String> shoppingListArray = new ArrayList<>(Arrays.asList("Peabuts", "Chocolate", "Melons"));
@@ -184,7 +195,19 @@ public class fragment_home_page extends Fragment {
         group1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                createQRCode(groupCodes.get(0));
+            }
+        });
+        group2Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createQRCode(groupCodes.get(1));
+            }
+        });
+        group3Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createQRCode(groupCodes.get(2));
             }
         });
 
@@ -216,7 +239,7 @@ public class fragment_home_page extends Fragment {
                 Object value = snapshot.getValue();
                 if(value instanceof ArrayList){
                     groupCodes = (ArrayList) value;
-                    updateUI();
+
                     //retrieve the map from Firebase Database once and then get the corresponding names
                     DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference().child("/groupsMap");
                     dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -231,6 +254,7 @@ public class fragment_home_page extends Fragment {
                                         groupList.add((String) groupMap.get(s));
                                     }
                                 }
+                                updateUI();
                             }
                         }
                         @Override
@@ -246,7 +270,7 @@ public class fragment_home_page extends Fragment {
 
 
     private void updateUI() {
-        FirebaseData.firebaseData.getMyUserRef().child("groups").setValue(groupList);
+        //FirebaseData.firebaseData.getMyUserRef().child("groups").setValue(groupList);
 
         for(int i = 0; i <groupList.size(); i++)
         {
@@ -298,14 +322,57 @@ public class fragment_home_page extends Fragment {
     public void secondGroup(){
         Toast.makeText(getActivity(), "You selected: " + group2.getText(), Toast.LENGTH_LONG).show();
         FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference().child("groups" + "/" + groupCodes.get(1)));
-        FirebaseData.firebaseData.setFridgeGroupName(group1.getText().toString());
+        FirebaseData.firebaseData.setFridgeGroupName(group2.getText().toString());
 
     }
 
     public void thirdGroup(){
         Toast.makeText(getActivity(), "You selected: " + group3.getText(), Toast.LENGTH_LONG).show();
         FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference().child("groups" + "/" + groupCodes.get(2)));
-        FirebaseData.firebaseData.setFridgeGroupName(group1.getText().toString());
+        FirebaseData.firebaseData.setFridgeGroupName(group3.getText().toString());
+
+    }
+
+    private void createQRCode(String friendCode){
+        final AlertDialog dialog;
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+        Bitmap bitmap;
+        QRGEncoder qrgEncoder;
+        final View friendCodePopView = getLayoutInflater().inflate(R.layout.friend_group_code, null);
+        ImageView qrView = friendCodePopView.findViewById(R.id.qrView);
+        TextView qrText = friendCodePopView.findViewById(R.id.qrCode);
+        Button qrClose = (Button)friendCodePopView.findViewById(R.id.qrClose);
+        WindowManager manager = (WindowManager) requireActivity().getSystemService(WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+        Point point = new Point();
+        display.getSize(point);
+        int width = point.x;
+        int height = point.y;
+        int dimen = width < height ? width : height;
+        dimen = dimen * 3 / 4;
+        qrgEncoder = new QRGEncoder(friendCode, null, QRGContents.Type.TEXT, dimen);
+
+        bitmap = qrgEncoder.getBitmap();
+        // the bitmap is set inside our image
+        // view using .setimagebitmap method.
+
+
+        qrView.setImageBitmap(bitmap);
+        qrText.setText(friendCode);
+
+        dialogBuilder.setView(friendCodePopView);
+        dialog = dialogBuilder.create();
+        qrClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+        Log.d("HomePage", "End of button press");
+
+
+
 
     }
 

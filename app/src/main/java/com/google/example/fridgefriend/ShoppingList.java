@@ -126,9 +126,7 @@ public class ShoppingList extends Fragment implements  RecyclerItemTouchHelper.R
 
     private void scanBarcode(){
         Intent intent = new Intent(getActivity(),CameraView.class );
-        Bundle b = new Bundle();
-        b.putInt("BARCODE", BARCODE_REQUEST); //Your id
-        intent.putExtras(b); //Put your id to your next Intent
+        intent.putExtra("isQrScan", false);
         startActivityForResult(intent, BARCODE_REQUEST);
 
     }
@@ -196,9 +194,7 @@ public class ShoppingList extends Fragment implements  RecyclerItemTouchHelper.R
     }
 
     private void fillListFromDatabase(){
-        //TODO link database and add products to the list via string
-        //fillDatabase();
-        FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference());
+        //fillDatabase(); //for testing purposes
         DatabaseReference localRef = FirebaseData.firebaseData.getFridgeGroup();
         localRef = localRef.child("shoppinglist");
         localRef.addValueEventListener(new ValueEventListener() {
