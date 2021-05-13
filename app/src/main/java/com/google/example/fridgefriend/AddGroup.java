@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Camera;
 import android.graphics.Point;
 import android.os.Bundle;
 
@@ -26,8 +27,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import androidmads.library.qrgenearator.QRGContents;
@@ -40,6 +48,10 @@ public class AddGroup extends AppCompatActivity {
     private EditText addGroup;
     private boolean checked = false;
     private String idOneString = "";
+    private Button scanExistQR;
+    private String code;
+    private ArrayList<String> groupList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +64,11 @@ public class AddGroup extends AppCompatActivity {
         addGroup = (EditText) findViewById(R.id.addGroup);
         Button newGroup = (Button)findViewById(R.id.newGroup);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+        scanExistQR= (Button)findViewById(R.id.scanExistQR);
         final Context homePageContext = getApplicationContext();
 
+        groupList = new ArrayList<>();
+        fillListFromDatabase();
         //figure out how to make a unique string with the field text
         //ex: addGroup.getText()+"#"
         //attach a unique 4 digit number
@@ -79,19 +93,16 @@ public class AddGroup extends AppCompatActivity {
             }
         });
 
-
-        newGroup.setOnClickListener(new View.OnClickListener() {
+         */
+        scanExistQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent newIntent = new Intent();
 
-                newIntent.putExtra("NewG", addGroup.getText().toString());
-                setResult(fragment_home_page.NEW_ENTRY, newIntent);
-                finish();
+                newIntent.putExtra("QR", "scan");
+                startActivityForResult(newIntent, CameraView.QR_SCAN);
             }
         });
-
-         */
 
     }
 
@@ -101,28 +112,38 @@ public class AddGroup extends AppCompatActivity {
         // so the code here needs to be changed so that
         //grab user's groups from firebase, which is a uuid.toString();
         //,child("groups") then use on data change to find it. If there isn't, send out a toast.
-        while (!checked) {
-            UUID idOne = UUID.randomUUID();
-            idOneString = idOne.toString();
-            FirebaseData.firebaseData.getFridgeGroup().child("groupID").setValue("groupID");
-            //for user
-            final DatabaseReference dataRefUser = FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+
+            //UUID idOne = UUID.randomUUID();
+            //idOneString = idOne.toString();
+
+        //unique string for QR code
+            String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().toUpperCase();
+            String groupname = addGroup.getText().toString().toUpperCase();
+            Date currentTime = Calendar.getInstance().getTime();
+            long time = currentTime.getTime();
+            String timeS = String.valueOf(time);
+            code = username.substring(0,2) + groupname.substring(0,2) + timeS.substring(timeS.length() -3);
+
+
+            final DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference().child("groupsMap");
+            final DatabaseReference dataRefUser = FirebaseData.firebaseData.getMyUserRef();
+
             //for all groups possible
-            final DatabaseReference dataRef = FirebaseData.firebaseData.getFridgeGroup().child("groupsMap");
 
             dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    if (!snapshot.hasChild(idOneString)) {
+                    if (!snapshot.exists()) {
                         // The child doesn't exist
-                        dataRef.child(idOneString).setValue(addGroup.getText());
-                        dataRefUser.child(idOneString).setValue(addGroup.getText());
+                        HashMap<String, String> entry = new HashMap<>();
+                        entry.put(code, addGroup.getText().toString());
+                        dataRef.setValue(entry);
 
-                        createQRCode(idOneString);
+                        groupList.add(code);
+                        dataRefUser.child("groups").setValue(groupList);;
 
-                        checked = true;
+                        createQRCode(code);
                     } else {
-                        checked = false;
                     }
                 }
 
@@ -131,8 +152,23 @@ public class AddGroup extends AppCompatActivity {
 
                 }
             });
-        }
 
+    }
+
+    private void fillListFromDatabase() {
+        final DatabaseReference dataRefUser = FirebaseData.firebaseData.getMyUserRef();
+        //groupList
+        dataRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Object value = snapshot.getValue();
+                if(value instanceof ArrayList){
+                    groupList = (ArrayList) value;
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
 
     }
 
@@ -144,15 +180,10 @@ public class AddGroup extends AppCompatActivity {
         final AlertDialog dialog;
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         Bitmap bitmap;
-        //String friendCode = "QWERTY";
         QRGEncoder qrgEncoder;
 
-        final View friendCodePopView = getLayoutInflater().inflate(R.layout.qrview, null);
+
         ImageView qrShow = (ImageView)findViewById(R.id.qrShow);
-        //TextView qrText = friendCodePopView.findViewById(R.id.qrCode);
-        Button qrClose = (Button)findViewById(R.id.close);
-
-
 
         WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
@@ -170,39 +201,10 @@ public class AddGroup extends AppCompatActivity {
 
 
         qrShow.setImageBitmap(bitmap);
-        //qrText.setText(friendCode);
-
-        dialogBuilder.setView(friendCodePopView);
-        dialog = dialogBuilder.create();
-        qrClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-        Log.d("HomePage", "End of button press");
-
-
 
 
     }
 
-    /*
-    private void scanQRCode(){
-
-        //this doesn't go back to fragment main
-        Intent intent = new Intent();
-        intent.putExtra("getQR", AddGroup.this,CameraView.class);
-
-        setResult(CameraView.QR_SCAN, intent);
-        finish();
-
-        //and im confused :(
-        startActivityForResult(intent, QR_SCAN);
-
-    }
-*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

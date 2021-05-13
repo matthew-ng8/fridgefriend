@@ -67,7 +67,6 @@ public class CameraView extends AppCompatActivity {
         cameraView.setVisibility(View.INVISIBLE);
 
         cameraButton = (Button) findViewById(R.id.scan_code);
-
         isScanning = false;
 
         final Activity activity = this;
@@ -95,33 +94,8 @@ public class CameraView extends AppCompatActivity {
 
             }
         });
-        /*
-         if(resultCode == QR_SCAN && requestCode == CODE){
-            editText.setVisibility(View.INVISIBLE);
-            enterKey.setVisibility(View.INVISIBLE);
 
-            //change the UI so the edit text and button doesn't appear
-           IntentIntegrator intentIntegrator = new IntentIntegrator(this);
-           intentIntegrator.setPrompt("Scan a barcode or QR Code");
-           intentIntegrator.setOrientationLocked(true);
-           intentIntegrator.initiateScan();
 
-           IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-           // if the intentResult is null then
-           // toast a message as "cancelled"
-           if (intentResult != null) {
-               if (intentResult.getContents() == null) {
-                   Toast.makeText(getBaseContext(), "Cancelled", Toast.LENGTH_SHORT).show();
-               } else {
-                   // if the intentResult is not null we'll set
-                   // the content and format of scan message
-                   //messageText.setText(intentResult.getContents());
-                   //send back intentResult.getContents();
-                   setResult(fragment_home_page.QR_CODE, intentResult.getContents());
-                   finish();
-               }
-           }
-         */
 
        editText = findViewById(R.id.edits);
        enterKey = findViewById(R.id.enter);
@@ -139,6 +113,7 @@ public class CameraView extends AppCompatActivity {
 
 
 
+
     }
 
     @Override
@@ -147,6 +122,8 @@ public class CameraView extends AppCompatActivity {
 
 
     }
+
+
 
     @Override
     protected void onDestroy() {
