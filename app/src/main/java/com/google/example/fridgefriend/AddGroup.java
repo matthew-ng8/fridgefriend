@@ -106,9 +106,9 @@ public class AddGroup extends AppCompatActivity {
             idOneString = idOne.toString();
             FirebaseData.firebaseData.getFridgeGroup().child("groupID").setValue("groupID");
             //for user
-            final DatabaseReference dataRefUser = FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            final DatabaseReference dataRefUser = FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
             //for all groups possible
-            final DatabaseReference dataRef = FirebaseData.firebaseData.getFridgeGroup().child("groupID");
+            final DatabaseReference dataRef = FirebaseData.firebaseData.getFridgeGroup().child("groupsMap");
 
             dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -139,6 +139,7 @@ public class AddGroup extends AppCompatActivity {
     /** TODO: resize the dimensions of the QR Code to matech the image view
      *
      */
+    //input has to be passed users
     private void createQRCode(String input){
         final AlertDialog dialog;
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);

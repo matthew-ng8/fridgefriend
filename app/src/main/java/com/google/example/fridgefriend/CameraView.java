@@ -95,30 +95,8 @@ public class CameraView extends AppCompatActivity {
 
             }
         });
-
-       editText = findViewById(R.id.edits);
-       enterKey = findViewById(R.id.enter);
-
-        enterKey.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent returnIntent = new Intent();
-
-                returnIntent.putExtra("Product", editText.getText().toString());
-                setResult(FridgeList.MANUAL_ENTRY, returnIntent);
-                finish();
-            }
-        });
-
-
-
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-       if(resultCode == QR_SCAN && requestCode == CODE){
+        /*
+         if(resultCode == QR_SCAN && requestCode == CODE){
             editText.setVisibility(View.INVISIBLE);
             enterKey.setVisibility(View.INVISIBLE);
 
@@ -142,11 +120,32 @@ public class CameraView extends AppCompatActivity {
                    setResult(fragment_home_page.QR_CODE, intentResult.getContents());
                    finish();
                }
-           } else {
-               super.onActivityResult(requestCode, resultCode, data);
            }
+         */
 
-        }
+       editText = findViewById(R.id.edits);
+       enterKey = findViewById(R.id.enter);
+
+        enterKey.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent returnIntent = new Intent();
+
+                returnIntent.putExtra("Product", editText.getText().toString());
+                setResult(FridgeList.MANUAL_ENTRY, returnIntent);
+                finish();
+            }
+        });
+
+
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
     }
 
     @Override
