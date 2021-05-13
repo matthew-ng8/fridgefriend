@@ -20,5 +20,7 @@
     <string name="delete">Delete</string>
     <string name="shopping_list">Shopping List</string>
     <string name="fridge_list">Fridge List</string>
+    <string name="scanbarcode_hint">Scan Barcode</string>
+    <string name="scanfriendcode_hint">Scan Friend Code</string>
 
 </resources>

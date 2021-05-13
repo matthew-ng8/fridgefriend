@@ -57,8 +57,8 @@ public class navigation extends AppCompatActivity implements BottomNavigationVie
         spinner = (Spinner) findViewById(R.id.spinner);
 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayList<String> listArray = new ArrayList<>();
-        listArray.add("FridgeGroup: Home");
-        listArray.add("FridgeGroup: Private");
+        listArray.add("Group List");
+        listArray.add("Private List");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listArray);
         spinner.setVisibility(View.INVISIBLE);
 
@@ -89,8 +89,12 @@ public class navigation extends AppCompatActivity implements BottomNavigationVie
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+        String fridgeGroupName = FirebaseData.firebaseData.getFridgeGroupName();
+        if(fridgeGroupName == null){
+            fridgeGroupName = "None :(";
+        }
         if(id == R.id.fridgeList){
-            toolbar.setTitle("Fridge List: " + FirebaseData.firebaseData.getFridgeGroupName());
+            toolbar.setTitle("Fridge List: " + fridgeGroupName);
             navController.navigate(R.id.fridgeList);
             spinner.setVisibility(View.VISIBLE);
         }else if(id == R.id.fragment_home_page){
@@ -98,7 +102,7 @@ public class navigation extends AppCompatActivity implements BottomNavigationVie
             navController.navigate(R.id.fragment_home_page);
             spinner.setVisibility(View.INVISIBLE);
         }else if(id == R.id.shoppingList){
-            toolbar.setTitle("Shopping List: "  + FirebaseData.firebaseData.getFridgeGroupName());
+            toolbar.setTitle("Shopping List: "  + fridgeGroupName);
             navController.navigate(R.id.shoppingList);
             spinner.setVisibility(View.VISIBLE);
         }else if(id == R.id.settingsFragment){

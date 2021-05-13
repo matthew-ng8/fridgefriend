@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -28,9 +29,6 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
-
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 import java.io.IOException;
 
@@ -71,8 +69,15 @@ public class CameraView extends AppCompatActivity {
 
         final Activity activity = this;
         setupSurface();
-        editText.setVisibility(View.VISIBLE);
-        enterKey.setVisibility(View.VISIBLE);
+        editText = findViewById(R.id.edits);
+        boolean isQrScan = getIntent().getExtras().getBoolean("isQrScan");
+        if(isQrScan){
+            editText.setHint("Enter Friend Code");
+            cameraButton.setText(R.string.scanfriendcode_hint);
+        }else{
+            editText.setHint("Enter Food Item");
+            cameraButton.setText(R.string.scanbarcode_hint);
+        }
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,10 +115,11 @@ public class CameraView extends AppCompatActivity {
                 finish();
             }
         });
+    }
 
-
-
-
+    @Override
+    public View onCreateView(@NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
+        return super.onCreateView(name, context, attrs);
     }
 
     @Override

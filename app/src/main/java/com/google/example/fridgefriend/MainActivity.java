@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private String mCustomToken;
     private static final int RC_SIGN_IN = 123;
     private GoogleSignInClient mGoogleSignInClient;
+    public static int MAX_GROUP_SIZE = 3;
 
     FirebaseData test;
     Button login;
