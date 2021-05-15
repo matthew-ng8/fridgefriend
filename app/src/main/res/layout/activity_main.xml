@@ -20,12 +20,12 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="212dp"
-        android:layout_height="134dp"
-        android:src="@drawable/mainlogo"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="56dp" />
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/fridgefriend_logo"
+        app:layout_constraintTop_toTopOf="@+id/toolbar2"
+        tools:layout_editor_absoluteX="105dp" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/google_button"
