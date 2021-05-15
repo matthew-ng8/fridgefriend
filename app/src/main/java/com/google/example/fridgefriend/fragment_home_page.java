@@ -313,9 +313,11 @@ public class fragment_home_page extends Fragment {
         for(int i = 0; i <groupList.size(); i++)
         {
             textGroup.get(i).setText(groupList.get(i));
+
             textGroup.get(i).setVisibility(View.VISIBLE);
             buttonGroup.get(i).setVisibility(View.VISIBLE);
             leaveButtonGroup.get(i).setVisibility(View.VISIBLE);
+
         }
 
 

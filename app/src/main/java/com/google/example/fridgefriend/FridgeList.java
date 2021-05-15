@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -250,7 +251,7 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
      *  TODO: check if the item already exists before adding it
      */
     private void addProduct(String productName){
-        productName = productName.toLowerCase();
+        productName = WordUtils.capitalize(productName);
         EdibleItem localEdibleItem = new EdibleItem(productName);
         int count = mAdapter.getItemCount();
         mAdapter.addItem(localEdibleItem, count);

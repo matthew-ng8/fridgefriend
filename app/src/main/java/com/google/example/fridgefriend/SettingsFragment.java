@@ -34,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
@@ -43,6 +44,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private MultiSelectListPreference allergies;
     private Context Context;
     private ArrayList<String> groupList = new ArrayList<String>();
+    private ArrayList<String> groupCodes = new ArrayList<String>();
+
 
 
     @Override
@@ -77,12 +80,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
                 };
         });
-    }
 
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        // just update all
-
-        allergies.setSummary("dummy"); // required or will not update
+        allergies.setSummary(""); // required or will not update
+        /*
         allergies.setOnPreferenceChangeListener(new        Preference.OnPreferenceChangeListener() {
 
             @Override
@@ -92,21 +92,38 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 for (int i = 0; i < mPreference.getEntryValues().length; i++)
                 {
                     if(mPreference.getEntryValues()[i].equals(newValue.toString())){
-                        id = i;
+                        id += i;
                         break;
                     }
                 }
                 allergies.setSummary(mPreference.getEntries()[id]);
                 return true;
             }
+        }); */
+
+        allergies.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            public boolean onPreferenceClick(Preference preference) {
+                MultiSelectListPreference mPreference = (MultiSelectListPreference)preference;
+                String summary ="";
+               for(int i =0; i<mPreference.getEntryValues().length; i ++)
+               {
+                summary += mPreference.getEntryValues()[i].toString() + ", ";
+               }
+                allergies.setSummary(summary);
+                return true;
+            };
         });
+        //group name should be added
+        updateUI();
 
     }
+
 
     private void updateUI() {
 
         //FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups").setValue(groupList);
-
+        fillListFromDatabase();
         String allGroups = "";
         for (int i = 0; i < groupList.size(); i++) {
             allGroups += groupList.get(i);
@@ -116,30 +133,43 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
 
-        private void fillListFromDatabase(){
-        //TODO link database and add products to the list via string
-        //fillDatabase();
-        FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference());
-        DatabaseReference localRef = FirebaseData.firebaseData.getFridgeGroup();
-        localRef = localRef.child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups");
-        localRef.addValueEventListener(new ValueEventListener() {
+    private void fillListFromDatabase(){
+        DatabaseReference localMyRefGroups = FirebaseData.firebaseData.getMyUserRef().child("groups");
+
+        //Retrieves all the user's groups
+        localMyRefGroups.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Object value = snapshot.getValue();
                 if(value instanceof ArrayList){
-                    groupList = (ArrayList) value;
+                    groupCodes = (ArrayList) value;
+
+                    //retrieve the map from Firebase Database once and then get the corresponding names
+                    DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference().child("/groupsMap");
+                    dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            Object value = snapshot.getValue();
+                            if(value instanceof HashMap){
+                                HashMap groupMap = (HashMap)value;
+                                groupList.clear();
+                                for(String s : groupCodes){
+                                    if(groupMap.containsKey(s)) {
+                                        groupList.add((String) groupMap.get(s));
+                                    }
+                                }
+                                updateUI();
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {}
+                    });
                 }
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
-
-
-
-        }
+    }
 
 
 }

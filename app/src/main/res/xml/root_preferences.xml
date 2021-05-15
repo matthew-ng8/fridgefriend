@@ -24,8 +24,7 @@
         app:title="@string/allerg_title"
         android:entries = "@array/allergies_display"
         android:entryValues="@array/allergies_values"
-        app:useSimpleSummaryProvider="true"
-        android:defaultValue="@array/allergies_display"/>
+        android:summary="%s" />
 
         <Preference
             android:clickable="true"
