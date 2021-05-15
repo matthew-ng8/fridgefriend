@@ -1,3 +1,4 @@
+![fridgefriend](https://github.com/jli0801/fridgefriend/blob/master/fridgefriend%20logo.png)
 # fridgefriend: an organizational app for android lollipop (version 22) and above.
 
 ## Description
