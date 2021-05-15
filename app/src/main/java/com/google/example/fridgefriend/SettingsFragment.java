@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.webkit.HttpAuthHandler;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,7 +36,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
@@ -42,10 +48,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private FirebaseAuth mAuth;
     private Preference delete, group;
     private MultiSelectListPreference allergies;
-    private Context Context;
-    private ArrayList<String> groupList = new ArrayList<String>();
-    private ArrayList<String> groupCodes = new ArrayList<String>();
-
 
 
     @Override
@@ -54,7 +56,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         mAuth = FirebaseAuth.getInstance();
         delete = (Preference) findPreference("delete");
         group = (Preference) findPreference("group");
-        updateUI();
         allergies = (MultiSelectListPreference) findPreference("allergies");
 
         delete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -81,95 +82,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 };
         });
 
-        allergies.setSummary(""); // required or will not update
-        /*
-        allergies.setOnPreferenceChangeListener(new        Preference.OnPreferenceChangeListener() {
 
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                MultiSelectListPreference mPreference = (MultiSelectListPreference)preference;
-                int id = 0;
-                for (int i = 0; i < mPreference.getEntryValues().length; i++)
-                {
-                    if(mPreference.getEntryValues()[i].equals(newValue.toString())){
-                        id += i;
-                        break;
-                    }
-                }
-                allergies.setSummary(mPreference.getEntries()[id]);
-                return true;
-            }
-        }); */
 
-        allergies.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-
-            public boolean onPreferenceClick(Preference preference) {
-                MultiSelectListPreference mPreference = (MultiSelectListPreference)preference;
-                String summary ="";
-               for(int i =0; i<mPreference.getEntryValues().length; i ++)
-               {
-                summary += mPreference.getEntryValues()[i].toString() + ", ";
-               }
-                allergies.setSummary(summary);
-                return true;
-            };
-        });
-        //group name should be added
-        updateUI();
 
     }
 
 
-    private void updateUI() {
-
-        //FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups").setValue(groupList);
-        fillListFromDatabase();
-        String allGroups = "";
-        for (int i = 0; i < groupList.size(); i++) {
-            allGroups += groupList.get(i);
-        }
-
-        group.setSummary((CharSequence)allGroups);
-    }
 
 
-    private void fillListFromDatabase(){
-        DatabaseReference localMyRefGroups = FirebaseData.firebaseData.getMyUserRef().child("groups");
 
-        //Retrieves all the user's groups
-        localMyRefGroups.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Object value = snapshot.getValue();
-                if(value instanceof ArrayList){
-                    groupCodes = (ArrayList) value;
 
-                    //retrieve the map from Firebase Database once and then get the corresponding names
-                    DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference().child("/groupsMap");
-                    dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            Object value = snapshot.getValue();
-                            if(value instanceof HashMap){
-                                HashMap groupMap = (HashMap)value;
-                                groupList.clear();
-                                for(String s : groupCodes){
-                                    if(groupMap.containsKey(s)) {
-                                        groupList.add((String) groupMap.get(s));
-                                    }
-                                }
-                                updateUI();
-                            }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {}
-                    });
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-    }
+
+
 
 
 }

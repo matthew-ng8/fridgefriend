@@ -24,6 +24,7 @@
         app:title="@string/allerg_title"
         android:entries = "@array/allergies_display"
         android:entryValues="@array/allergies_values"
+        android:defaultValue="@array/empty"
         android:summary="%s" />
 
         <Preference
