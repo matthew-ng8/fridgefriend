@@ -131,7 +131,10 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
         foodFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scanBarcode();
+                if(FirebaseData.firebaseData.getFridgeCode() !=null)
+                    scanBarcode();
+                else
+                    Toast.makeText(getContext(), "Select a group from home", Toast.LENGTH_SHORT).show();
             }
         });
         return view;
@@ -213,29 +216,31 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
 
     }
 
-    private void fillListFromDatabase(){
+    public void fillListFromDatabase(){
         //TODO link database and add products to the list via string
         //fillDatabase();//for testing purposes
         DatabaseReference localRef = FirebaseData.firebaseData.getFridgeGroup();
-        localRef = localRef.child("fridgelist");
-        localRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Object value = snapshot.getValue();
-                mAdapter.clear();
-                if(value instanceof ArrayList){
-                    for(Object o : (ArrayList)value){
-                        HashMap h = (HashMap)o;
-                        addProduct((String)h.get("name"));
+        if(localRef != null) {
+            localRef = localRef.child("fridgelist");
+            localRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Object value = snapshot.getValue();
+                    mAdapter.clear();
+                    if (value instanceof ArrayList) {
+                        for (Object o : (ArrayList) value) {
+                            HashMap h = (HashMap) o;
+                            addProduct((String) h.get("name"));
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
 
 
     }

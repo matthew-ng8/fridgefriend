@@ -73,6 +73,7 @@ public class fragment_home_page extends Fragment {
     private ArrayList<String> groupCodes = new ArrayList<String>();
     private ArrayList<TextView> textGroup = new ArrayList<TextView>();
     private ArrayList<Button> buttonGroup = new ArrayList<Button>();
+    private ArrayList<Button> leaveButtonGroup = new ArrayList<>();
 
 
 
@@ -150,6 +151,7 @@ public class fragment_home_page extends Fragment {
         group2Button = (Button) homeP.findViewById(R.id.group2Show);
         group3Button = (Button) homeP.findViewById(R.id.group3Show);
 
+
         add = (FloatingActionButton) homeP.findViewById(R.id.add_fridge_friend);
         add.setClickable(true);
         add.setOnClickListener(new View.OnClickListener() {
@@ -169,9 +171,17 @@ public class fragment_home_page extends Fragment {
         buttonGroup.add(group3Button);
 
 
-        //doesn't delete existing data
-        updateTextViews();
+        final Button leaveButton1 = (Button)homeP.findViewById(R.id.leaveGroup1);
+        Button leaveButton2 = (Button)homeP.findViewById(R.id.leaveGroup2);
+        Button leaveButton3 = (Button)homeP.findViewById(R.id.leaveGroup3);
+        leaveButtonGroup.add(leaveButton1);
+        leaveButtonGroup.add(leaveButton2);
+        leaveButtonGroup.add(leaveButton3);
 
+
+        //doesn't delete existing data
+        //updateTextViews();
+        updateUI();
         group1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -210,6 +220,29 @@ public class fragment_home_page extends Fragment {
                 createQRCode(groupCodes.get(2));
             }
         });
+
+
+        leaveButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                leaveGroup(0);
+            }
+        });
+        leaveButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                leaveGroup(1);
+            }
+        });
+        leaveButton3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                leaveGroup(2);
+            }
+        });
+
+
+
 
 
         return homeP;
@@ -271,20 +304,20 @@ public class fragment_home_page extends Fragment {
 
     private void updateUI() {
         //FirebaseData.firebaseData.getMyUserRef().child("groups").setValue(groupList);
+        for(int i =0; i < MainActivity.MAX_GROUP_SIZE;i++){
+            buttonGroup.get(i).setVisibility(View.INVISIBLE);
+            textGroup.get(i).setVisibility(View.INVISIBLE);
+            leaveButtonGroup.get(i).setVisibility(View.INVISIBLE);
+        }
 
         for(int i = 0; i <groupList.size(); i++)
         {
             textGroup.get(i).setText(groupList.get(i));
 
-            if(groupList.get(i).length()>1){
-                buttonGroup.get(i).setVisibility(View.VISIBLE);
-                textGroup.get(i).setVisibility(View.VISIBLE);
-            }
-            else
-            {
-                buttonGroup.get(i).setVisibility(View.INVISIBLE);
-                textGroup.get(i).setVisibility(View.VISIBLE);
-            }
+            textGroup.get(i).setVisibility(View.VISIBLE);
+            buttonGroup.get(i).setVisibility(View.VISIBLE);
+            leaveButtonGroup.get(i).setVisibility(View.VISIBLE);
+
         }
 
 
@@ -318,6 +351,8 @@ public class fragment_home_page extends Fragment {
         //FirebaseData.firebaseData.setFridgeGroup(FirebaseData.firebaseData.getFridgeGroup().child(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()).child("groups").child((String) group1.getText()));
         FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference().child("groups" + "/" + groupCodes.get(0)));
         FirebaseData.firebaseData.setFridgeGroupName(group1.getText().toString());
+        FirebaseData.firebaseData.setFridgeCode(groupCodes.get(0));
+        FirebaseData.firebaseData.setGroupIndexSelected(0);
 
     }
 
@@ -325,14 +360,16 @@ public class fragment_home_page extends Fragment {
         Toast.makeText(getActivity(), "You selected: " + group2.getText(), Toast.LENGTH_LONG).show();
         FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference().child("groups" + "/" + groupCodes.get(1)));
         FirebaseData.firebaseData.setFridgeGroupName(group2.getText().toString());
-
+        FirebaseData.firebaseData.setFridgeCode(groupCodes.get(1));
+        FirebaseData.firebaseData.setGroupIndexSelected(1);
     }
 
     public void thirdGroup(){
         Toast.makeText(getActivity(), "You selected: " + group3.getText(), Toast.LENGTH_LONG).show();
         FirebaseData.firebaseData.setFridgeGroup(FirebaseDatabase.getInstance().getReference().child("groups" + "/" + groupCodes.get(2)));
         FirebaseData.firebaseData.setFridgeGroupName(group3.getText().toString());
-
+        FirebaseData.firebaseData.setFridgeCode(groupCodes.get(2));
+        FirebaseData.firebaseData.setGroupIndexSelected(2);
     }
 
     private void createQRCode(String friendCode){
@@ -378,6 +415,21 @@ public class fragment_home_page extends Fragment {
 
     }
 
+
+    //TODO delete the personal lists from database
+    // if the user has selected a group that you delete, need to set it to null
+    private void leaveGroup(int groupIndex){
+        int groupIndexSelected = FirebaseData.firebaseData.getGroupIndexSelected();
+        if(groupIndex == groupIndexSelected){
+            FirebaseData.firebaseData.setFridgeCode(null);
+            FirebaseData.firebaseData.updateFridgeGroup(true);
+        }
+        String code = groupCodes.remove(groupIndex);
+        groupList.remove(groupIndex);
+        FirebaseData.firebaseData.getMyUserRef().child("groups").setValue(groupCodes);
+
+        updateUI();
+    }
     //General Issues:
     /*
     App will stop responding when multiple groups are added. UI doesn't update when user first logs in (Maybe create another method for that.

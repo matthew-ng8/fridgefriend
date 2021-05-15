@@ -22,5 +22,7 @@
     <string name="fridge_list">Fridge List</string>
     <string name="scanbarcode_hint">Scan Barcode</string>
     <string name="scanfriendcode_hint">Scan Friend Code</string>
+    <string name="share_group">Share Group</string>
+    <string name="leave_group">Leave Group</string>
 
 </resources>
