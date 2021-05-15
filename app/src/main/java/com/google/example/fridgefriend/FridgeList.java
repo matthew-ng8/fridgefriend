@@ -251,7 +251,7 @@ public class FridgeList extends Fragment implements RecyclerItemTouchHelper.Recy
      *  TODO: check if the item already exists before adding it
      */
     private void addProduct(String productName){
-        productName = WordUtils.capitalize(productName);
+        productName = WordUtils.capitalize(productName.toLowerCase());
         EdibleItem localEdibleItem = new EdibleItem(productName);
         int count = mAdapter.getItemCount();
         mAdapter.addItem(localEdibleItem, count);
