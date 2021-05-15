@@ -1,38 +1,37 @@
 package com.google.example.fridgefriend;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
-import androidx.navigation.NavHost;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 /** TODO: implement the spinner onitem selected stuff, style the Spinner more accurately, maybe move some items into onCreateView
  *
  */
-public class navigation extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class navigation extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
     //BottomNavigationView.OnNavigationItemSelectedListener
     private NavController navController;
     private Toolbar toolbar;
-    private Spinner spinner;
+    private Switch aSwitch;
+    private boolean usePersonalList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,21 +53,14 @@ public class navigation extends AppCompatActivity implements BottomNavigationVie
         toolbar.setTitle("Home");
         setSupportActionBar(toolbar);
 
-        spinner = (Spinner) findViewById(R.id.spinner);
-// Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayList<String> listArray = new ArrayList<>();
-        listArray.add("Group List");
-        listArray.add("Private List");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listArray);
-        spinner.setVisibility(View.INVISIBLE);
-
-// Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-
-
-
+       aSwitch = findViewById(R.id.switchWidget);
+       aSwitch.setVisibility(View.INVISIBLE);
+       aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                usePersonalList = isChecked;
+                updateGroupAndSubtext();
+            }
+        });
     }
 
     @Override
@@ -90,30 +82,56 @@ public class navigation extends AppCompatActivity implements BottomNavigationVie
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         String fridgeGroupName = FirebaseData.firebaseData.getFridgeGroupName();
-        if(fridgeGroupName == null){
+        String fridgeCode = FirebaseData.firebaseData.getFridgeCode();
+        if(fridgeCode == null){
             fridgeGroupName = "None :(";
+            toolbar.setSubtitle("Pick a Fridge Group From Home");
         }
         if(id == R.id.fridgeList){
             toolbar.setTitle("Fridge List: " + fridgeGroupName);
+
+            updateGroupAndSubtext();
+
             navController.navigate(R.id.fridgeList);
-            spinner.setVisibility(View.VISIBLE);
+            aSwitch.setVisibility(View.VISIBLE);
         }else if(id == R.id.fragment_home_page){
             toolbar.setTitle("Home");
             navController.navigate(R.id.fragment_home_page);
-            spinner.setVisibility(View.INVISIBLE);
+            aSwitch.setVisibility(View.INVISIBLE);
         }else if(id == R.id.shoppingList){
             toolbar.setTitle("Shopping List: "  + fridgeGroupName);
             navController.navigate(R.id.shoppingList);
-            spinner.setVisibility(View.VISIBLE);
+            aSwitch.setVisibility(View.VISIBLE);
+            updateGroupAndSubtext();
         }else if(id == R.id.settingsFragment){
             toolbar.setTitle("Settings");
             navController.navigate(R.id.settingsFragment);
-            spinner.setVisibility(View.INVISIBLE);
+            aSwitch.setVisibility(View.INVISIBLE);
         }
 
         System.out.println(item);
         System.out.println(id);
 
         return true;
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
+        // An item was selected. You can retrieve the selected item using
+        // parent.getItemAtPosition(pos)
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
+    }
+
+    private void updateGroupAndSubtext(){
+        if (usePersonalList) {
+            toolbar.setSubtitle("Group List");
+        } else {
+            toolbar.setSubtitle("Personal List");
+        }
+        FirebaseData.firebaseData.updateFridgeGroup(usePersonalList);
+
     }
 }

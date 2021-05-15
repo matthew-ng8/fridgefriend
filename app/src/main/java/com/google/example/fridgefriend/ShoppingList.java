@@ -118,7 +118,10 @@ public class ShoppingList extends Fragment implements  RecyclerItemTouchHelper.R
         foodFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scanBarcode();
+                if(FirebaseData.firebaseData.getFridgeCode() !=null)
+                    scanBarcode();
+                else
+                    Toast.makeText(getContext(), "Select a group from home", Toast.LENGTH_SHORT).show();
             }
         });
         return view;
@@ -193,28 +196,30 @@ public class ShoppingList extends Fragment implements  RecyclerItemTouchHelper.R
         FirebaseData.firebaseData.getFridgeGroup().child("shoppinglist").setValue(ITEMS);
     }
 
-    private void fillListFromDatabase(){
+    public void fillListFromDatabase(){
         //fillDatabase(); //for testing purposes
         DatabaseReference localRef = FirebaseData.firebaseData.getFridgeGroup();
-        localRef = localRef.child("shoppinglist");
-        localRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Object value = snapshot.getValue();
-                mAdapter.clear();
-                if(value instanceof ArrayList){
-                    for(Object o : (ArrayList)value){
-                        HashMap h = (HashMap)o;
-                        addProduct((String)h.get("name"));
+        if(localRef!=null) {
+            localRef = localRef.child("shoppinglist");
+            localRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Object value = snapshot.getValue();
+                    mAdapter.clear();
+                    if (value instanceof ArrayList) {
+                        for (Object o : (ArrayList) value) {
+                            HashMap h = (HashMap) o;
+                            addProduct((String) h.get("name"));
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
 
 
     }
