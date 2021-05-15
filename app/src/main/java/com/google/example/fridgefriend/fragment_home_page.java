@@ -275,13 +275,15 @@ public class fragment_home_page extends Fragment {
         for(int i = 0; i <groupList.size(); i++)
         {
             textGroup.get(i).setText(groupList.get(i));
-            if(groupList.get(i).length()>1 ){
+
+            if(groupList.get(i).length()>1){
                 buttonGroup.get(i).setVisibility(View.VISIBLE);
+                textGroup.get(i).setVisibility(View.VISIBLE);
             }
             else
             {
                 buttonGroup.get(i).setVisibility(View.INVISIBLE);
-
+                textGroup.get(i).setVisibility(View.VISIBLE);
             }
         }
 

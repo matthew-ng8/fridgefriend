@@ -77,12 +77,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
                 };
         });
-    }
 
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        // just update all
-
-        allergies.setSummary("dummy"); // required or will not update
+        allergies.setSummary(""); // required or will not update
+        /*
         allergies.setOnPreferenceChangeListener(new        Preference.OnPreferenceChangeListener() {
 
             @Override
@@ -92,16 +89,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 for (int i = 0; i < mPreference.getEntryValues().length; i++)
                 {
                     if(mPreference.getEntryValues()[i].equals(newValue.toString())){
-                        id = i;
+                        id += i;
                         break;
                     }
                 }
                 allergies.setSummary(mPreference.getEntries()[id]);
                 return true;
             }
-        });
+        });*/
+
+        //group name should be added
 
     }
+
 
     private void updateUI() {
 

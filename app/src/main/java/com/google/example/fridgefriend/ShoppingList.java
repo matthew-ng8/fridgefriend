@@ -225,7 +225,7 @@ public class ShoppingList extends Fragment implements  RecyclerItemTouchHelper.R
      *  TODO: check if the item already exists before adding it
      */
     private void addProduct(String productName){
-        EdibleItem localEdibleItem = new EdibleItem(productName);
+        EdibleItem localEdibleItem = new EdibleItem(WordUtils.capitalize(productName));
         int count = mAdapter.getItemCount();
         mAdapter.addItem(localEdibleItem, count);
     }
